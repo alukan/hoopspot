@@ -28,4 +28,19 @@ class CourtController extends Controller
 
         return view('courts.index', compact('city', 'courts', 'coverages', 'rimTypes'));
     }
+
+    public function show(Court $court)
+    {
+        $court->load([
+            'city',
+            'creator',
+            'games' => fn ($q) => $q->withCount('attendees')->orderBy('scheduled_at'),
+            'comments' => fn ($q) => $q->whereNull('replies_to')->with(['user', 'replies.user'])->latest(),
+        ]);
+
+        $upcomingGames = $court->games->where('scheduled_at', '>=', now())->values();
+        $pastGames     = $court->games->where('scheduled_at', '<', now())->values();
+
+        return view('courts.show', compact('court', 'upcomingGames', 'pastGames'));
+    }
 }

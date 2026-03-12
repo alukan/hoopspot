@@ -81,7 +81,7 @@
     @else
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach ($courts as $court)
-                <div class="bg-gray-900 border border-white/10 rounded-xl p-5 flex flex-col gap-3 hover:border-orange-500/30 transition-colors">
+                <a href="{{ route('courts.show', $court) }}" class="bg-gray-900 border border-white/10 rounded-xl p-5 flex flex-col gap-3 hover:border-orange-500/40 hover:bg-gray-900/80 transition-colors">
 
                     {{-- Badges --}}
                     <div class="flex items-center gap-2">
@@ -110,7 +110,7 @@
                         <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">{{ $court->description }}</p>
                     @endif
 
-                </div>
+                </a>
             @endforeach
         </div>
     @endif
