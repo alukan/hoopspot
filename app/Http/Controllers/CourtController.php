@@ -42,7 +42,7 @@ class CourtController extends Controller
         $data = $request->validate([
             'city_id'     => ['required', 'exists:cities,id'],
             'name'        => ['required', 'string', 'max:255'],
-            'address'     => ['nullable', 'string', 'max:255'],
+            'address'     => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'coverage'    => ['required', 'in:' . implode(',', Court::COVERAGES)],
             'rim_type'    => ['required', 'in:' . implode(',', Court::RIM_TYPES)],

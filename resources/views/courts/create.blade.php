@@ -61,17 +61,19 @@
 
             {{-- Address --}}
             <div>
-                <label for="address" class="block text-sm font-medium text-gray-300 mb-1.5">
-                    Address <span class="text-gray-600 font-normal">(optional)</span>
-                </label>
+                <label for="address" class="block text-sm font-medium text-gray-300 mb-1.5">Address</label>
                 <input
                     type="text"
                     id="address"
                     name="address"
                     value="{{ old('address') }}"
+                    required
                     placeholder="e.g. 123 Main St"
-                    class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 placeholder:text-gray-600"
+                    class="w-full bg-gray-800 border @error('address') border-red-500/60 @else border-white/10 @enderror text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 placeholder:text-gray-600"
                 >
+                @error('address')
+                    <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Description --}}
