@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FriendRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,11 @@ class ProfileController extends Controller
             'courts' => fn ($q) => $q->with('city')->withCount('games')->orderBy('name'),
         ]);
 
-        return view('profile.show', compact('user'));
+        $sentIds     = FriendRequest::where('inviter_id', $user->id)->where('status', 'accepted')->pluck('invitee_id');
+        $receivedIds = FriendRequest::where('invitee_id', $user->id)->where('status', 'accepted')->pluck('inviter_id');
+        $friends     = User::whereIn('id', $sentIds->merge($receivedIds))->orderBy('name')->get();
+
+        return view('profile.show', compact('user', 'friends'));
     }
 
     public function edit()

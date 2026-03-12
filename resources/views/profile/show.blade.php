@@ -122,6 +122,39 @@ $levelColors = [
                     @endforeach
                 </div>
             @endif
+
+            {{-- Friends --}}
+            <h2 class="text-lg font-semibold mt-8 mb-4">
+                Friends
+                @if ($friends->isNotEmpty())
+                    <span class="ml-2 text-sm font-normal text-gray-500">{{ $friends->count() }}</span>
+                @endif
+            </h2>
+
+            @if ($friends->isEmpty())
+                <p class="text-sm text-gray-500">No friends yet. Join a game to meet players!</p>
+            @else
+                <div class="flex flex-col gap-2">
+                    @foreach ($friends as $friend)
+                        <div class="bg-gray-900 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-sm font-bold shrink-0">
+                                {{ strtoupper(substr($friend->name, 0, 1)) }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-semibold text-white truncate">{{ $friend->name }}</div>
+                                @if ($friend->level)
+                                    <span class="text-xs text-gray-500 capitalize">{{ $friend->level }}</span>
+                                @endif
+                            </div>
+                            <form method="POST" action="{{ route('friends.destroy', $friend) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Remove</button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
 
     </div>
