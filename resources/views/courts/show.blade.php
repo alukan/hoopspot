@@ -36,31 +36,51 @@
     </div>
 
     {{-- Photo gallery --}}
-    <div class="grid grid-cols-3 gap-2 rounded-xl overflow-hidden mb-10 h-64">
-        <div class="col-span-2 overflow-hidden">
-            <img
-                src="https://picsum.photos/seed/court{{ $court->id }}a/800/520"
-                alt="{{ $court->name }}"
-                class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-            >
+    @php $images = $court->images ?? [] @endphp
+
+    @if (count($images) === 0)
+        <div class="rounded-xl overflow-hidden mb-10 h-56 bg-gray-900 border border-white/10 flex flex-col items-center justify-center gap-2 text-gray-600">
+            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 21h18M3 3h18M3 9h18M3 15h18" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 10.5a2.25 2.25 0 114.5 0 2.25 2.25 0 01-4.5 0z" />
+            </svg>
+            <span class="text-sm">No photos yet</span>
         </div>
-        <div class="flex flex-col gap-2">
-            <div class="flex-1 overflow-hidden">
-                <img
-                    src="https://picsum.photos/seed/court{{ $court->id }}b/400/260"
-                    alt="{{ $court->name }}"
-                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                >
+
+    @elseif (count($images) === 1)
+        <div class="rounded-xl overflow-hidden mb-10 h-64">
+            <img src="{{ $images[0] }}" alt="{{ $court->name }}" class="w-full h-full object-cover">
+        </div>
+
+    @elseif (count($images) === 2)
+        <div class="grid grid-cols-2 gap-2 rounded-xl overflow-hidden mb-10 h-64">
+            @foreach ($images as $img)
+                <div class="overflow-hidden">
+                    <img src="{{ $img }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                </div>
+            @endforeach
+        </div>
+
+    @else
+        <div class="grid grid-cols-3 gap-2 rounded-xl overflow-hidden mb-10 h-64">
+            <div class="col-span-2 overflow-hidden">
+                <img src="{{ $images[0] }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
             </div>
-            <div class="flex-1 overflow-hidden">
-                <img
-                    src="https://picsum.photos/seed/court{{ $court->id }}c/400/260"
-                    alt="{{ $court->name }}"
-                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                >
+            <div class="flex flex-col gap-2">
+                <div class="flex-1 overflow-hidden">
+                    <img src="{{ $images[1] }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="flex-1 overflow-hidden relative">
+                    <img src="{{ $images[2] }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    @if (count($images) > 3)
+                        <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold text-sm">
+                            +{{ count($images) - 3 }} more
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     {{-- Body: two columns --}}
     <div class="grid lg:grid-cols-3 gap-8">

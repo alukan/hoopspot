@@ -22,6 +22,11 @@ class Court extends Model
         'description',
         'coverage',
         'rim_type',
+        'images',
+    ];
+
+    protected $casts = [
+        'images' => 'array',
     ];
 
     public function city(): BelongsTo
