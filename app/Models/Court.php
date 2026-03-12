@@ -13,6 +13,7 @@ class Court extends Model
 
     const COVERAGES = ['outdoor', 'indoor'];
     const RIM_TYPES = ['standard', 'breakaway', 'chain', 'bent'];
+    const STATUSES  = ['pending', 'active'];
 
     protected $fillable = [
         'city_id',
@@ -23,6 +24,7 @@ class Court extends Model
         'coverage',
         'rim_type',
         'images',
+        'status',
     ];
 
     protected $casts = [

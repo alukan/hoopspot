@@ -24,6 +24,7 @@ class CourtFactory extends Factory
             'description' => fake()->optional(0.7)->sentence(),
             'coverage'    => fake()->randomElement(Court::COVERAGES),
             'rim_type'    => fake()->randomElement(Court::RIM_TYPES),
+            'status'      => 'active',
             'images'      => fake()->optional(0.6)->passthrough(
                 collect(range(1, fake()->numberBetween(1, 3)))
                     ->map(fn ($i) => "https://picsum.photos/seed/" . fake()->unique()->word() . "/800/600")

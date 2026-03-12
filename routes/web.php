@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
+Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create')->middleware('auth');
+Route::post('/courts', [CourtController::class, 'store'])->name('courts.store')->middleware('auth');
 Route::get('/courts/{court}', [CourtController::class, 'show'])->name('courts.show');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');

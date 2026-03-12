@@ -11,7 +11,12 @@
         <a href="{{ route('home') }}" class="text-gray-500 hover:text-white transition-colors text-sm">← Cities</a>
         <span class="text-gray-700">/</span>
         <h1 class="text-2xl font-bold">Courts in <span class="text-orange-500">{{ $city->name }}</span></h1>
-        <span class="ml-auto text-sm text-gray-500">{{ $courts->count() }} {{ Str::plural('court', $courts->count()) }}</span>
+        <span class="text-sm text-gray-500">{{ $courts->count() }} {{ Str::plural('court', $courts->count()) }}</span>
+        @auth
+            <a href="{{ route('courts.create', ['city' => $city->id]) }}" class="ml-auto bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                + Add court
+            </a>
+        @endauth
     </div>
 
     {{-- Filters --}}

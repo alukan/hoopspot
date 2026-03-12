@@ -29,6 +29,35 @@ class CourtController extends Controller
         return view('courts.index', compact('city', 'courts', 'coverages', 'rimTypes'));
     }
 
+    public function create(Request $request)
+    {
+        $cities = City::orderBy('name')->get();
+        $cityId = $request->query('city');
+
+        return view('courts.create', compact('cities', 'cityId'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'city_id'     => ['required', 'exists:cities,id'],
+            'name'        => ['required', 'string', 'max:255'],
+            'address'     => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'coverage'    => ['required', 'in:' . implode(',', Court::COVERAGES)],
+            'rim_type'    => ['required', 'in:' . implode(',', Court::RIM_TYPES)],
+        ]);
+
+        Court::create([
+            ...$data,
+            'creator_id' => auth()->id(),
+            'status'     => 'pending',
+        ]);
+
+        return redirect()->route('home')
+            ->with('success', 'Court submitted! It will appear once approved by an admin.');
+    }
+
     public function show(Court $court)
     {
         $court->load([

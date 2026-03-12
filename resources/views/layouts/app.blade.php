@@ -32,6 +32,13 @@
     </nav>
 
     <main class="flex-1">
+        @if (session('success'))
+            <div class="max-w-5xl mx-auto px-6 pt-6">
+                <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-xl px-4 py-3">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
         @yield('content')
     </main>
 
