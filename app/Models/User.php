@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -45,5 +47,35 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function courts(): HasMany
+    {
+        return $this->hasMany(Court::class, 'creator_id');
+    }
+
+    public function sentFriendRequests(): HasMany
+    {
+        return $this->hasMany(FriendRequest::class, 'inviter_id');
+    }
+
+    public function receivedFriendRequests(): HasMany
+    {
+        return $this->hasMany(FriendRequest::class, 'invitee_id');
+    }
+
+    public function attendees(): HasMany
+    {
+        return $this->hasMany(Attendee::class);
+    }
+
+    public function games(): BelongsToMany
+    {
+        return $this->belongsToMany(Game::class, 'attendees');
+    }
+
+    public function courtComments(): HasMany
+    {
+        return $this->hasMany(CourtComment::class);
     }
 }
