@@ -100,15 +100,30 @@ $levelColors = [
                 @if ($game->attendees->isNotEmpty())
                     <span class="ml-2 text-sm font-normal text-gray-500">{{ $game->attendees->count() }}</span>
                 @endif
-                @if (count(array_filter($friendStatuses, fn($s) => $s === 'friends')) > 0)
-                    @php $friendCount = count(array_filter($friendStatuses, fn($s) => $s === 'friends')); @endphp
-                    <span class="ml-2 text-sm font-normal text-sky-400">{{ $friendCount }} {{ Str::plural('friend', $friendCount) }} going</span>
-                @endif
             </h2>
 
             @if ($game->attendees->isEmpty())
                 <p class="text-sm text-gray-500">No players signed up yet.</p>
             @else
+                @php $goingFriends = $game->attendees->filter(fn($a) => ($friendStatuses[$a->user_id] ?? '') === 'friends'); @endphp
+                @if ($goingFriends->isNotEmpty())
+                    <div class="bg-sky-500/5 border border-sky-500/15 rounded-xl px-4 py-3 mb-4">
+                        <p class="text-xs font-semibold text-sky-400 uppercase tracking-widest mb-2.5">Friends going</p>
+                        <div class="flex flex-wrap gap-3">
+                            @foreach ($goingFriends as $attendee)
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center text-xs font-bold shrink-0">
+                                        {{ strtoupper(substr($attendee->user->name, 0, 1)) }}
+                                    </div>
+                                    <span class="text-sm text-white">{{ $attendee->user->name }}</span>
+                                    @if ($attendee->user->level)
+                                        <span class="text-xs font-medium px-2 py-0.5 rounded-full capitalize {{ $levelColors[$attendee->user->level] }}">{{ $attendee->user->level }}</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
                 <div class="grid sm:grid-cols-2 gap-3">
                     @foreach ($game->attendees as $attendee)
                         <div class="bg-gray-900 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
