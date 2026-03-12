@@ -131,7 +131,7 @@ $levelColors = [
     @else
         <div class="flex flex-col gap-3">
             @foreach ($games as $game)
-                <div class="bg-gray-900 border border-white/10 rounded-xl px-5 py-4 flex items-center gap-5 hover:border-orange-500/40 transition-colors">
+                <a href="{{ route('games.show', $game) }}" class="bg-gray-900 border border-white/10 rounded-xl px-5 py-4 flex items-center gap-5 hover:border-orange-500/40 transition-colors">
 
                     {{-- Date block --}}
                     <div class="shrink-0 w-14 text-center">
@@ -167,9 +167,9 @@ $levelColors = [
                             </span>
                         </div>
 
-                        <a href="{{ route('courts.show', $game->court) }}" class="font-semibold text-white hover:text-orange-400 transition-colors leading-snug">
+                        <span class="font-semibold text-white leading-snug">
                             {{ $game->court->name }}
-                        </a>
+                        </span>
                         @if ($game->court->address)
                             <p class="text-xs text-gray-500 mt-0.5">{{ $game->court->address }}</p>
                         @endif
@@ -184,7 +184,7 @@ $levelColors = [
                         <div class="text-xs text-gray-500">{{ Str::plural('player', $game->attendees_count) }}</div>
                     </div>
 
-                </div>
+                </a>
             @endforeach
         </div>
     @endif

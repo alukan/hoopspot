@@ -45,4 +45,11 @@ class GameController extends Controller
 
         return view('games.index', compact('city', 'games', 'levels', 'coverages', 'rimTypes', 'sort'));
     }
+
+    public function show(Game $game)
+    {
+        $game->load(['court.city', 'attendees.user']);
+
+        return view('games.show', compact('game'));
+    }
 }

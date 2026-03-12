@@ -9,3 +9,4 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
 Route::get('/courts/{court}', [CourtController::class, 'show'])->name('courts.show');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
+Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
