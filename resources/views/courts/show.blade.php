@@ -92,10 +92,10 @@ $levelColors = [
     @endif
 
     {{-- Body: two columns --}}
-    <div class="grid lg:grid-cols-3 gap-8">
+    <div class="grid md:grid-cols-3 gap-8">
 
         {{-- Main column --}}
-        <div class="lg:col-span-2 flex flex-col gap-10">
+        <div class="md:col-span-2 flex flex-col gap-10">
 
             {{-- Description --}}
             @if ($court->description)
