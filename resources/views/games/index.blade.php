@@ -174,9 +174,12 @@ $levelColors = [
                             </span>
                         </div>
 
-                        <span class="font-semibold text-white leading-snug">
-                            {{ $game->court->name }}
-                        </span>
+                        @if ($game->title)
+                            <div class="font-semibold text-white leading-snug">{{ $game->title }}</div>
+                            <div class="text-xs text-gray-500 mt-0.5">{{ $game->court->name }}</div>
+                        @else
+                            <div class="font-semibold text-white leading-snug">{{ $game->court->name }}</div>
+                        @endif
                         @if ($game->court->address)
                             <p class="text-xs text-gray-500 mt-0.5">{{ $game->court->address }}</p>
                         @endif

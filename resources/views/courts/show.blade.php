@@ -136,10 +136,14 @@ $levelColors = [
                                         @endif
                                     </div>
                                     <div class="text-sm font-semibold text-white">
-                                        {{ \Carbon\Carbon::parse($game->scheduled_at)->format('D, M j') }}
+                                        @if ($game->title)
+                                            {{ $game->title }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($game->scheduled_at)->format('D, M j') }}
+                                        @endif
                                     </div>
                                     <div class="text-xs text-gray-500 mt-0.5">
-                                        {{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}
+                                        @if ($game->title){{ \Carbon\Carbon::parse($game->scheduled_at)->format('D, M j') }}&nbsp;·&nbsp;@endif{{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}
                                     </div>
                                     @if ($game->description)
                                         <div class="text-sm text-gray-400 mt-1 truncate">{{ $game->description }}</div>
