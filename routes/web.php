@@ -16,6 +16,8 @@ Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::get('/games/create', [GameController::class, 'create'])->name('games.create')->middleware('auth');
 Route::post('/games', [GameController::class, 'store'])->name('games.store')->middleware('auth');
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
+Route::post('/games/{game}/join', [GameController::class, 'join'])->name('games.join')->middleware('auth');
+Route::delete('/games/{game}/leave', [GameController::class, 'leave'])->name('games.leave')->middleware('auth');
 
 // Auth
 Route::middleware('guest')->group(function () {

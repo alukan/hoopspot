@@ -52,7 +52,36 @@ $levelColors = [
         </div>
         <div class="shrink-0 text-right pt-1">
             <div class="text-3xl font-bold text-orange-500">{{ $game->attendees->count() }}</div>
-            <div class="text-sm text-gray-500">{{ Str::plural('player', $game->attendees->count()) }}</div>
+            <div class="text-sm text-gray-500 mb-3">{{ Str::plural('player', $game->attendees->count()) }}</div>
+
+            @if ($game->scheduled_at->isFuture())
+                @auth
+                    @if ($isCreator)
+                        <span class="inline-block text-xs font-semibold px-3 py-1.5 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                            You're hosting
+                        </span>
+                    @elseif ($isAttendee)
+                        <form method="POST" action="{{ route('games.leave', $game) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-sm font-semibold px-4 py-2 rounded-lg border border-white/10 bg-gray-800 hover:bg-gray-700 text-white transition-colors cursor-pointer">
+                                Leave game
+                            </button>
+                        </form>
+                    @else
+                        <form method="POST" action="{{ route('games.join', $game) }}">
+                            @csrf
+                            <button type="submit" class="text-sm font-semibold px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-white transition-colors cursor-pointer">
+                                Join game
+                            </button>
+                        </form>
+                    @endif
+                @else
+                    <a href="{{ route('auth.login') }}" class="inline-block text-sm font-semibold px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-white transition-colors">
+                        Join game
+                    </a>
+                @endauth
+            @endif
         </div>
     </div>
 

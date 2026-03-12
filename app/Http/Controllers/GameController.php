@@ -52,7 +52,37 @@ class GameController extends Controller
     {
         $game->load(['court.city', 'attendees.user']);
 
-        return view('games.show', compact('game'));
+        $isAttendee = Auth::check() && $game->attendees->contains('user_id', Auth::id());
+        $isCreator  = Auth::check() && $game->creator_id === Auth::id();
+
+        return view('games.show', compact('game', 'isAttendee', 'isCreator'));
+    }
+
+    public function join(Game $game)
+    {
+        if ($game->scheduled_at->isPast()) {
+            return back()->with('error', 'This game has already passed.');
+        }
+
+        $alreadyIn = Attendee::where('game_id', $game->id)->where('user_id', Auth::id())->exists();
+        if ($alreadyIn) {
+            return back();
+        }
+
+        Attendee::create(['game_id' => $game->id, 'user_id' => Auth::id()]);
+
+        return back()->with('success', 'You joined the game!');
+    }
+
+    public function leave(Game $game)
+    {
+        if ($game->creator_id === Auth::id()) {
+            return back()->with('error', "Hosts can't leave their own game.");
+        }
+
+        Attendee::where('game_id', $game->id)->where('user_id', Auth::id())->delete();
+
+        return back()->with('success', 'You left the game.');
     }
 
     public function create(Request $request)

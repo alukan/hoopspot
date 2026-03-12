@@ -39,6 +39,13 @@
                 </div>
             </div>
         @endif
+        @if (session('error'))
+            <div class="max-w-5xl mx-auto px-6 pt-6">
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl px-4 py-3">
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
         @yield('content')
     </main>
 
