@@ -94,6 +94,10 @@ $levelColors = [
                 @if ($game->attendees->isNotEmpty())
                     <span class="ml-2 text-sm font-normal text-gray-500">{{ $game->attendees->count() }}</span>
                 @endif
+                @if (count(array_filter($friendStatuses, fn($s) => $s === 'friends')) > 0)
+                    @php $friendCount = count(array_filter($friendStatuses, fn($s) => $s === 'friends')); @endphp
+                    <span class="ml-2 text-sm font-normal text-sky-400">{{ $friendCount }} {{ Str::plural('friend', $friendCount) }} going</span>
+                @endif
             </h2>
 
             @if ($game->attendees->isEmpty())
@@ -111,6 +115,9 @@ $levelColors = [
                                     @if ($attendee->user_id === $game->creator_id)
                                         <span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">Host</span>
                                     @endif
+                                    @if (isset($friendStatuses[$attendee->user_id]) && $friendStatuses[$attendee->user_id] === 'friends')
+                                        <span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 ring-1 ring-sky-500/20">Friend</span>
+                                    @endif
                                 </div>
                                 @if ($attendee->user->level)
                                     <span class="inline-block mt-0.5 text-xs font-medium px-2 py-0.5 rounded-full capitalize {{ $levelColors[$attendee->user->level] }}">
@@ -123,16 +130,14 @@ $levelColors = [
                             @auth
                                 @if ($attendee->user_id !== Auth::id())
                                     @php $fs = $friendStatuses[$attendee->user_id] ?? 'none'; @endphp
-                                    @if ($fs === 'friends')
-                                        <span class="shrink-0 text-xs text-gray-500">Friends</span>
-                                    @elseif ($fs === 'sent')
+                                    @if ($fs === 'sent')
                                         <span class="shrink-0 text-xs text-gray-500">Requested</span>
                                     @elseif ($fs === 'incoming')
                                         <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}">
                                             @csrf
                                             <button type="submit" class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Accept</button>
                                         </form>
-                                    @else
+                                    @elseif ($fs === 'none')
                                         <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}">
                                             @csrf
                                             <button type="submit" class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-800 text-gray-400 ring-1 ring-white/10 hover:text-white transition-colors cursor-pointer">+ Add</button>
