@@ -45,6 +45,24 @@
         </div>
     </div>
 
+    {{-- Pending approval notice --}}
+    @if ($court->status === 'pending')
+        <div class="flex items-center justify-between gap-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl px-5 py-3 mb-6">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-400 ring-1 ring-yellow-500/20">Pending</span>
+                <span class="text-sm text-gray-400">This court is awaiting admin approval and is not yet publicly visible.</span>
+            </div>
+            @auth
+                @if (Auth::user()->is_admin)
+                    <form method="POST" action="{{ route('courts.approve', $court) }}" class="shrink-0">
+                        @csrf
+                        <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Approve</button>
+                    </form>
+                @endif
+            @endauth
+        </div>
+    @endif
+
     {{-- Photo gallery --}}
     @if (count($court->images) === 0)
         <div class="rounded-xl overflow-hidden mb-10 h-56 bg-gray-900 border border-white/10 flex flex-col items-center justify-center gap-2 text-gray-600">

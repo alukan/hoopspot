@@ -88,4 +88,14 @@ class CourtController extends Controller
 
         return redirect()->route('courts.index', ['city' => $cityId])->with('success', 'Court deleted.');
     }
+
+    public function approve(Court $court)
+    {
+        abort_unless(Auth::user()->is_admin, 403);
+
+        $court->status = 'active';
+        $court->save();
+
+        return back()->with('success', 'Court approved.');
+    }
 }
