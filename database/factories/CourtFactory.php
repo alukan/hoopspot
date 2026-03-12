@@ -22,6 +22,8 @@ class CourtFactory extends Factory
             'name'        => fake()->lastName() . ' ' . fake()->randomElement($suffixes),
             'address'     => fake()->streetAddress(),
             'description' => fake()->optional(0.7)->sentence(),
+            'coverage'    => fake()->randomElement(Court::COVERAGES),
+            'rim_type'    => fake()->randomElement(Court::RIM_TYPES),
         ];
     }
 }

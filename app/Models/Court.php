@@ -11,12 +11,17 @@ class Court extends Model
 {
     use HasFactory;
 
+    const COVERAGES = ['outdoor', 'indoor'];
+    const RIM_TYPES = ['standard', 'breakaway', 'chain', 'bent'];
+
     protected $fillable = [
         'city_id',
         'creator_id',
         'name',
         'address',
         'description',
+        'coverage',
+        'rim_type',
     ];
 
     public function city(): BelongsTo
