@@ -12,7 +12,7 @@ class CourtController extends Controller
     {
         $city = City::findOrFail($request->query('city'));
 
-        $query = Court::where('city_id', $city->id)->with('city');
+        $query = Court::where('city_id', $city->id)->where('status', 'active')->with('city');
 
         if ($request->filled('coverage')) {
             $query->whereIn('coverage', (array) $request->query('coverage'));
@@ -60,6 +60,10 @@ class CourtController extends Controller
 
     public function show(Court $court)
     {
+        if ($court->status === 'pending' && auth()->id() !== $court->creator_id) {
+            abort(404);
+        }
+
         $court->load([
             'city',
             'creator',

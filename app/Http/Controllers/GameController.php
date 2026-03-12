@@ -13,7 +13,7 @@ class GameController extends Controller
     {
         $city = City::findOrFail($request->query('city'));
 
-        $query = Game::whereHas('court', fn ($q) => $q->where('city_id', $city->id))
+        $query = Game::whereHas('court', fn ($q) => $q->where('city_id', $city->id)->where('status', 'active'))
             ->with(['court'])
             ->withCount('attendees')
             ->where('scheduled_at', '>=', now());
