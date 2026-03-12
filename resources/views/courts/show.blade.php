@@ -4,6 +4,15 @@
 
 @section('content')
 
+@php
+$levelColors = [
+    'beginner'     => 'bg-green-500/10 text-green-400 ring-1 ring-green-500/20',
+    'intermediate' => 'bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20',
+    'advanced'     => 'bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/20',
+    'pro'          => 'bg-purple-500/10 text-purple-400 ring-1 ring-purple-500/20',
+];
+@endphp
+
 <div class="max-w-5xl mx-auto px-6 py-10">
 
     {{-- Breadcrumb --}}
@@ -117,8 +126,15 @@
                 @else
                     <div class="flex flex-col gap-3">
                         @foreach ($upcomingGames as $game)
-                            <div class="bg-gray-900 border border-white/10 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
-                                <div>
+                            <a href="{{ route('games.show', $game) }}" class="bg-gray-900 border border-white/10 rounded-xl px-5 py-4 flex items-center justify-between gap-4 hover:border-orange-500/40 transition-colors">
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 mb-1.5">
+                                        @if ($game->level)
+                                            <span class="text-xs font-medium px-2.5 py-0.5 rounded-full capitalize {{ $levelColors[$game->level] }}">
+                                                {{ $game->level }}
+                                            </span>
+                                        @endif
+                                    </div>
                                     <div class="text-sm font-semibold text-white">
                                         {{ \Carbon\Carbon::parse($game->scheduled_at)->format('D, M j') }}
                                     </div>
@@ -126,14 +142,14 @@
                                         {{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}
                                     </div>
                                     @if ($game->description)
-                                        <div class="text-sm text-gray-400 mt-1">{{ $game->description }}</div>
+                                        <div class="text-sm text-gray-400 mt-1 truncate">{{ $game->description }}</div>
                                     @endif
                                 </div>
                                 <div class="text-right shrink-0">
                                     <div class="text-sm font-semibold text-orange-500">{{ $game->attendees_count }}</div>
                                     <div class="text-xs text-gray-500">{{ Str::plural('player', $game->attendees_count) }}</div>
                                 </div>
-                            </div>
+                            </a>
                         @endforeach
                     </div>
                 @endif
