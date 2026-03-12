@@ -120,6 +120,56 @@
         </div>
     @endif
 
+    {{-- Pending courts (admin only) --}}
+    @auth
+        @if (Auth::user()->is_admin && $pendingCourts->isNotEmpty())
+            <div class="mt-12">
+                <h2 class="text-lg font-semibold mb-4">
+                    Pending Approval
+                    <span class="ml-2 text-sm font-normal text-yellow-500">{{ $pendingCourts->count() }}</span>
+                </h2>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach ($pendingCourts as $court)
+                        <div class="bg-gray-900 border border-yellow-500/20 rounded-xl p-5 flex flex-col gap-3">
+
+                            {{-- Badges --}}
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-400 ring-1 ring-yellow-500/20">Pending</span>
+                                <span @class([
+                                    'text-xs font-medium px-2.5 py-1 rounded-full',
+                                    'bg-sky-500/10 text-sky-400 ring-1 ring-sky-500/20'       => $court->coverage === 'indoor',
+                                    'bg-green-500/10 text-green-400 ring-1 ring-green-500/20' => $court->coverage === 'outdoor',
+                                ])>{{ ucfirst($court->coverage) }}</span>
+                            </div>
+
+                            {{-- Name & address --}}
+                            <div class="flex-1">
+                                <a href="{{ route('courts.show', $court) }}" class="font-semibold text-white hover:text-orange-400 transition-colors leading-snug">{{ $court->name }}</a>
+                                @if ($court->address)
+                                    <p class="text-sm text-gray-500 mt-0.5">{{ $court->address }}</p>
+                                @endif
+                            </div>
+
+                            {{-- Actions --}}
+                            <div class="flex items-center gap-3 pt-1 border-t border-white/5">
+                                <form method="POST" action="{{ route('courts.approve', $court) }}">
+                                    @csrf
+                                    <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Approve</button>
+                                </form>
+                                <form method="POST" action="{{ route('courts.destroy', $court) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Delete</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    @endauth
+
 </div>
 
 @endsection

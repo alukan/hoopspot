@@ -27,7 +27,15 @@ class CourtController extends Controller
         $coverages = Court::COVERAGES;
         $rimTypes  = Court::RIM_TYPES;
 
-        return view('courts.index', compact('city', 'courts', 'coverages', 'rimTypes'));
+        $pendingCourts = collect();
+        if (Auth::user()?->is_admin) {
+            $pendingCourts = Court::where('city_id', $city->id)
+                ->where('status', 'pending')
+                ->orderBy('name')
+                ->get();
+        }
+
+        return view('courts.index', compact('city', 'courts', 'coverages', 'rimTypes', 'pendingCourts'));
     }
 
     public function create(Request $request)
