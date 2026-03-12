@@ -36,16 +36,9 @@
                 class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 mb-4"
             >
                 <option value="" disabled selected>Choose a city…</option>
-                <option value="1">New York</option>
-                <option value="2">Los Angeles</option>
-                <option value="3">Chicago</option>
-                <option value="4">Houston</option>
-                <option value="5">Phoenix</option>
-                <option value="6">Philadelphia</option>
-                <option value="7">San Antonio</option>
-                <option value="8">Dallas</option>
-                <option value="9">Toronto</option>
-                <option value="10">Miami</option>
+                @foreach ($cities as $city)
+                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                @endforeach
             </select>
 
             <button
