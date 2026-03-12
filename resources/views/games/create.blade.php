@@ -9,7 +9,12 @@
     <div class="flex items-center gap-3 mb-8">
         <a href="{{ url()->previous() }}" class="text-gray-500 hover:text-white transition-colors text-sm">← Back</a>
         <span class="text-gray-700">/</span>
-        <h1 class="text-2xl font-bold">Schedule a game</h1>
+        <h1 class="text-2xl font-bold">
+            Schedule a game
+            @if ($city)
+                <span class="text-orange-500">in {{ $city->name }}</span>
+            @endif
+        </h1>
     </div>
 
     <div class="bg-gray-900 border border-white/10 rounded-2xl p-8">
@@ -29,7 +34,7 @@
                     <option value="">Select a court…</option>
                     @foreach ($courts as $court)
                         <option value="{{ $court->id }}" {{ (old('court_id', $courtId) == $court->id) ? 'selected' : '' }}>
-                            {{ $court->name }} — {{ $court->city->name }}
+                            {{ $court->name }}{{ $city ? '' : ' — ' . $court->city->name }}
                         </option>
                     @endforeach
                 </select>

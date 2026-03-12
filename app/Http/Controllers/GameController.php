@@ -87,11 +87,21 @@ class GameController extends Controller
 
     public function create(Request $request)
     {
-        $courts = Court::where('status', 'active')->with('city')->orderBy('name')->get();
+        $courtQuery = Court::where('status', 'active')->with('city')->orderBy('name');
+
+        $city = null;
+        if ($request->filled('city')) {
+            $city = City::find($request->query('city'));
+            if ($city) {
+                $courtQuery->where('city_id', $city->id);
+            }
+        }
+
+        $courts  = $courtQuery->get();
         $courtId = $request->query('court');
         $levels  = Game::LEVELS;
 
-        return view('games.create', compact('courts', 'courtId', 'levels'));
+        return view('games.create', compact('courts', 'courtId', 'levels', 'city'));
     }
 
     public function store(Request $request)

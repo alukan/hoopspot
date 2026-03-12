@@ -7,9 +7,14 @@
 <div class="max-w-2xl mx-auto px-6 py-10">
 
     <div class="flex items-center gap-3 mb-8">
-        <a href="{{ route('home') }}" class="text-gray-500 hover:text-white transition-colors text-sm">← Home</a>
+        <a href="{{ url()->previous() }}" class="text-gray-500 hover:text-white transition-colors text-sm">← Back</a>
         <span class="text-gray-700">/</span>
-        <h1 class="text-2xl font-bold">Add a court</h1>
+        <h1 class="text-2xl font-bold">
+            Add a court
+            @if ($cityId && ($lockedCity = $cities->find($cityId)))
+                <span class="text-orange-500">in {{ $lockedCity->name }}</span>
+            @endif
+        </h1>
     </div>
 
     <div class="bg-gray-900 border border-white/10 rounded-2xl p-8">
@@ -23,23 +28,30 @@
 
             {{-- City --}}
             <div>
-                <label for="city_id" class="block text-sm font-medium text-gray-300 mb-1.5">City</label>
-                <select
-                    id="city_id"
-                    name="city_id"
-                    required
-                    class="w-full bg-gray-800 border @error('city_id') border-red-500/60 @else border-white/10 @enderror text-white rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50"
-                >
-                    <option value="">Select a city…</option>
-                    @foreach ($cities as $city)
-                        <option value="{{ $city->id }}" {{ (old('city_id', $cityId) == $city->id) ? 'selected' : '' }}>
-                            {{ $city->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('city_id')
-                    <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
-                @enderror
+                <label class="block text-sm font-medium text-gray-300 mb-1.5">City</label>
+                @if ($cityId && ($lockedCity = $cities->find($cityId)))
+                    <input type="hidden" name="city_id" value="{{ $lockedCity->id }}">
+                    <div class="w-full bg-gray-800/50 border border-white/10 text-gray-400 rounded-xl px-4 py-3 text-sm">
+                        {{ $lockedCity->name }}
+                    </div>
+                @else
+                    <select
+                        id="city_id"
+                        name="city_id"
+                        required
+                        class="w-full bg-gray-800 border @error('city_id') border-red-500/60 @else border-white/10 @enderror text-white rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50"
+                    >
+                        <option value="">Select a city…</option>
+                        @foreach ($cities as $city)
+                            <option value="{{ $city->id }}" {{ (old('city_id') == $city->id) ? 'selected' : '' }}>
+                                {{ $city->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('city_id')
+                        <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
+                    @enderror
+                @endif
             </div>
 
             {{-- Name --}}
