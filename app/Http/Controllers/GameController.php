@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendee;
 use App\Models\City;
 use App\Models\Court;
+use App\Models\FriendRequest;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +56,31 @@ class GameController extends Controller
         $isAttendee = Auth::check() && $game->attendees->contains('user_id', Auth::id());
         $isCreator  = Auth::check() && $game->creator_id === Auth::id();
 
-        return view('games.show', compact('game', 'isAttendee', 'isCreator'));
+        $friendStatuses = [];
+        if (Auth::check()) {
+            $otherIds = $game->attendees->pluck('user_id')->reject(fn ($id) => $id === Auth::id());
+
+            $requests = FriendRequest::where(function ($q) use ($otherIds) {
+                $q->where('inviter_id', Auth::id())->whereIn('invitee_id', $otherIds);
+            })->orWhere(function ($q) use ($otherIds) {
+                $q->where('invitee_id', Auth::id())->whereIn('inviter_id', $otherIds);
+            })->get();
+
+            foreach ($otherIds as $id) {
+                $req = $requests->first(fn ($r) => $r->inviter_id === $id || $r->invitee_id === $id);
+                if (! $req) {
+                    $friendStatuses[$id] = 'none';
+                } elseif ($req->status === 'accepted') {
+                    $friendStatuses[$id] = 'friends';
+                } elseif ($req->inviter_id === Auth::id()) {
+                    $friendStatuses[$id] = 'sent';
+                } else {
+                    $friendStatuses[$id] = 'incoming';
+                }
+            }
+        }
+
+        return view('games.show', compact('game', 'isAttendee', 'isCreator', 'friendStatuses'));
     }
 
     public function join(Game $game)

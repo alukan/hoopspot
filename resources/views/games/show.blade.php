@@ -120,6 +120,26 @@ $levelColors = [
                                     <span class="text-xs text-gray-600">No level set</span>
                                 @endif
                             </div>
+                            @auth
+                                @if ($attendee->user_id !== Auth::id())
+                                    @php $fs = $friendStatuses[$attendee->user_id] ?? 'none'; @endphp
+                                    @if ($fs === 'friends')
+                                        <span class="shrink-0 text-xs text-gray-500">Friends</span>
+                                    @elseif ($fs === 'sent')
+                                        <span class="shrink-0 text-xs text-gray-500">Requested</span>
+                                    @elseif ($fs === 'incoming')
+                                        <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}">
+                                            @csrf
+                                            <button type="submit" class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Accept</button>
+                                        </form>
+                                    @else
+                                        <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}">
+                                            @csrf
+                                            <button type="submit" class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-800 text-gray-400 ring-1 ring-white/10 hover:text-white transition-colors cursor-pointer">+ Add</button>
+                                        </form>
+                                    @endif
+                                @endif
+                            @endauth
                         </div>
                     @endforeach
                 </div>
