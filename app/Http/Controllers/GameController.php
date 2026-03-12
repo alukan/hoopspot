@@ -131,6 +131,16 @@ class GameController extends Controller
         return back()->with('success', 'You left the game.');
     }
 
+    public function destroy(Game $game)
+    {
+        abort_unless(Auth::user()->is_admin, 403);
+
+        $court = $game->court;
+        $game->delete();
+
+        return redirect()->route('courts.show', $court)->with('success', 'Game deleted.');
+    }
+
     public function create(Request $request)
     {
         $courtQuery = Court::where('status', 'active')->with('city')->orderBy('name');

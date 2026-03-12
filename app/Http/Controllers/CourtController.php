@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\Court;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CourtController extends Controller
 {
@@ -61,7 +62,7 @@ class CourtController extends Controller
 
     public function show(Court $court)
     {
-        if ($court->status === 'pending' && auth()->id() !== $court->creator_id) {
+        if ($court->status === 'pending' && auth()->id() !== $court->creator_id && ! Auth::user()?->is_admin) {
             abort(404);
         }
 
@@ -76,5 +77,15 @@ class CourtController extends Controller
         $pastGames     = $court->games->where('scheduled_at', '<', now())->values();
 
         return view('courts.show', compact('court', 'upcomingGames', 'pastGames'));
+    }
+
+    public function destroy(Court $court)
+    {
+        abort_unless(Auth::user()->is_admin, 403);
+
+        $cityId = $court->city_id;
+        $court->delete();
+
+        return redirect()->route('courts.index', ['city' => $cityId])->with('success', 'Court deleted.');
     }
 }

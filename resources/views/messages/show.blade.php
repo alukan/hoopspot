@@ -38,7 +38,7 @@
                             <span class="text-xs text-gray-600">{{ $message->created_at->diffForHumans() }}</span>
                         </div>
                         <p class="text-sm text-gray-300 leading-relaxed">{{ $message->body }}</p>
-                        @if ($message->user_id === Auth::id())
+                        @if ($message->user_id === Auth::id() || Auth::user()->is_admin)
                             <form method="POST" action="{{ route('game-messages.destroy', $message) }}" class="mt-1.5">
                                 @csrf
                                 @method('DELETE')

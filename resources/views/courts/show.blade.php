@@ -33,6 +33,15 @@
             <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-gray-800 text-gray-400 ring-1 ring-white/10 capitalize">
                 {{ str_replace('_', ' ', $court->rim_type) }} rim
             </span>
+            @auth
+                @if (Auth::user()->is_admin)
+                    <form method="POST" action="{{ route('courts.destroy', $court) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-xs text-red-500/70 hover:text-red-400 transition-colors cursor-pointer">Delete court</button>
+                    </form>
+                @endif
+            @endauth
         </div>
     </div>
 
@@ -193,7 +202,7 @@
                                                         <button type="submit" class="shrink-0 bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors cursor-pointer">Post</button>
                                                     </form>
                                                 </details>
-                                                @if ($comment->user_id === Auth::id())
+                                                @if ($comment->user_id === Auth::id() || Auth::user()->is_admin)
                                                     <form method="POST" action="{{ route('court-comments.destroy', $comment) }}">
                                                         @csrf
                                                         @method('DELETE')
@@ -237,7 +246,7 @@
                                                                 <button type="submit" class="shrink-0 bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors cursor-pointer">Post</button>
                                                             </form>
                                                         </details>
-                                                        @if ($reply->user_id === Auth::id())
+                                                        @if ($reply->user_id === Auth::id() || Auth::user()->is_admin)
                                                             <form method="POST" action="{{ route('court-comments.destroy', $reply) }}">
                                                                 @csrf
                                                                 @method('DELETE')

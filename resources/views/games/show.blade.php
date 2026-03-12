@@ -83,6 +83,15 @@
                     </a>
                 @endauth
             @endif
+            @auth
+                @if (Auth::user()->is_admin)
+                    <form method="POST" action="{{ route('games.destroy', $game) }}" class="mt-3">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-xs text-red-500/70 hover:text-red-400 transition-colors cursor-pointer">Delete game</button>
+                    </form>
+                @endif
+            @endauth
         </div>
     </div>
 
@@ -190,7 +199,7 @@
                                 </div>
                                 <p class="text-sm text-gray-300 leading-relaxed">{{ $message->body }}</p>
                                 @auth
-                                    @if ($message->user_id === Auth::id())
+                                    @if ($message->user_id === Auth::id() || Auth::user()->is_admin)
                                         <form method="POST" action="{{ route('game-messages.destroy', $message) }}" class="mt-1.5">
                                             @csrf
                                             @method('DELETE')

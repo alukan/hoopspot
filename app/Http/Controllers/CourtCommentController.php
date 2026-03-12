@@ -28,7 +28,7 @@ class CourtCommentController extends Controller
 
     public function destroy(CourtComment $comment)
     {
-        if ($comment->user_id !== Auth::id()) {
+        if ($comment->user_id !== Auth::id() && ! Auth::user()->is_admin) {
             abort(403);
         }
 

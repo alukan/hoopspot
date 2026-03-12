@@ -25,7 +25,7 @@ class GameMessageController extends Controller
 
     public function destroy(Message $message)
     {
-        if ($message->user_id !== Auth::id()) {
+        if ($message->user_id !== Auth::id() && ! Auth::user()->is_admin) {
             abort(403);
         }
 
