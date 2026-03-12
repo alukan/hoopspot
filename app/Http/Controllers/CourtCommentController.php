@@ -32,6 +32,7 @@ class CourtCommentController extends Controller
             abort(403);
         }
 
+        $comment->replies()->update(['replies_to' => null]);
         $comment->delete();
 
         return back()->with('success', 'Comment deleted.');

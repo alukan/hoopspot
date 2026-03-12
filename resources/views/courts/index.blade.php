@@ -130,7 +130,8 @@
                 </h2>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach ($pendingCourts as $court)
-                        <div class="bg-gray-900 border border-yellow-500/20 rounded-xl p-5 flex flex-col gap-3">
+                        <div class="relative bg-gray-900 border border-yellow-500/20 rounded-xl p-5 flex flex-col gap-3 hover:border-yellow-500/40 transition-colors">
+                            <a href="{{ route('courts.show', $court) }}" class="absolute inset-0 rounded-xl"></a>
 
                             {{-- Badges --}}
                             <div class="flex items-center gap-2">
@@ -144,14 +145,14 @@
 
                             {{-- Name & address --}}
                             <div class="flex-1">
-                                <a href="{{ route('courts.show', $court) }}" class="font-semibold text-white hover:text-orange-400 transition-colors leading-snug">{{ $court->name }}</a>
+                                <div class="font-semibold text-white leading-snug">{{ $court->name }}</div>
                                 @if ($court->address)
                                     <p class="text-sm text-gray-500 mt-0.5">{{ $court->address }}</p>
                                 @endif
                             </div>
 
                             {{-- Actions --}}
-                            <div class="flex items-center gap-3 pt-1 border-t border-white/5">
+                            <div class="relative flex items-center gap-3 pt-1 border-t border-white/5">
                                 <form method="POST" action="{{ route('courts.approve', $court) }}">
                                     @csrf
                                     <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Approve</button>

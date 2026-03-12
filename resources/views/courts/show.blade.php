@@ -181,7 +181,7 @@
                 <h2 class="text-lg font-semibold mb-4">
                     Comments
                     @if ($court->comments->isNotEmpty())
-                        <span class="ml-2 text-sm font-normal text-gray-500">{{ $court->comments->count() }}</span>
+                        <span class="ml-2 text-sm font-normal text-gray-500">{{ $court->comments->sum(fn ($c) => 1 + $c->replies->count()) }}</span>
                     @endif
                 </h2>
 
@@ -234,7 +234,11 @@
 
                                 {{-- Replies --}}
                                 @if ($comment->replies->isNotEmpty())
-                                    <div class="ml-11 mt-4 flex flex-col gap-4 border-l border-white/10 pl-4">
+                                    <details class="ml-11 mt-3" open>
+                                        <summary class="text-xs text-gray-600 hover:text-gray-400 transition-colors cursor-pointer list-none pl-4 mb-2">
+                                            ↳ {{ $comment->replies->count() }} {{ Str::plural('reply', $comment->replies->count()) }}
+                                        </summary>
+                                    <div class="flex flex-col gap-4 border-l-2 border-orange-500/20 pl-4">
                                         @foreach ($comment->replies as $reply)
                                             <div class="flex gap-3">
                                                 <div class="w-7 h-7 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-xs font-bold shrink-0">
@@ -277,6 +281,7 @@
                                             </div>
                                         @endforeach
                                     </div>
+                                    </details>
                                 @endif
                             </div>
                         @endforeach
