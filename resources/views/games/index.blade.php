@@ -189,6 +189,9 @@ $levelColors = [
                     <div class="shrink-0 text-right">
                         <div class="text-lg font-bold text-orange-500">{{ $game->attendees_count }}</div>
                         <div class="text-xs text-gray-500">{{ Str::plural('player', $game->attendees_count) }}</div>
+                        @if ($friendGameCounts->get($game->id, 0) > 0)
+                            <div class="text-xs text-sky-400 mt-1">{{ $friendGameCounts->get($game->id) }} {{ Str::plural('friend', $friendGameCounts->get($game->id)) }}</div>
+                        @endif
                     </div>
 
                 </a>

@@ -46,7 +46,22 @@ class GameController extends Controller
         $coverages = Court::COVERAGES;
         $rimTypes  = Court::RIM_TYPES;
 
-        return view('games.index', compact('city', 'games', 'levels', 'coverages', 'rimTypes', 'sort'));
+        $friendGameCounts = collect();
+        if (Auth::check() && $games->isNotEmpty()) {
+            $sentIds     = FriendRequest::where('inviter_id', Auth::id())->where('status', 'accepted')->pluck('invitee_id');
+            $receivedIds = FriendRequest::where('invitee_id', Auth::id())->where('status', 'accepted')->pluck('inviter_id');
+            $friendIds   = $sentIds->merge($receivedIds);
+
+            if ($friendIds->isNotEmpty()) {
+                $friendGameCounts = Attendee::whereIn('game_id', $games->pluck('id'))
+                    ->whereIn('user_id', $friendIds)
+                    ->selectRaw('game_id, count(*) as count')
+                    ->groupBy('game_id')
+                    ->pluck('count', 'game_id');
+            }
+        }
+
+        return view('games.index', compact('city', 'games', 'levels', 'coverages', 'rimTypes', 'sort', 'friendGameCounts'));
     }
 
     public function show(Game $game)
