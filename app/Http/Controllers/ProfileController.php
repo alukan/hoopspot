@@ -23,7 +23,19 @@ class ProfileController extends Controller
         $receivedIds = FriendRequest::where('invitee_id', $user->id)->where('status', 'accepted')->pluck('inviter_id');
         $friends     = User::whereIn('id', $sentIds->merge($receivedIds))->orderBy('name')->get();
 
-        return view('profile.show', compact('user', 'friends'));
+        $sentRequests = FriendRequest::where('inviter_id', $user->id)
+            ->where('status', 'pending')
+            ->with('invitee')
+            ->latest()
+            ->get();
+
+        $incomingRequests = FriendRequest::where('invitee_id', $user->id)
+            ->where('status', 'pending')
+            ->with('inviter')
+            ->latest()
+            ->get();
+
+        return view('profile.show', compact('user', 'friends', 'sentRequests', 'incomingRequests'));
     }
 
     public function edit()

@@ -123,6 +123,40 @@ $levelColors = [
                 </div>
             @endif
 
+            {{-- Incoming requests --}}
+            @if ($incomingRequests->isNotEmpty())
+                <h2 class="text-lg font-semibold mt-8 mb-4">
+                    Friend Requests
+                    <span class="ml-2 text-sm font-normal text-orange-500">{{ $incomingRequests->count() }}</span>
+                </h2>
+                <div class="flex flex-col gap-2">
+                    @foreach ($incomingRequests as $req)
+                        <div class="bg-gray-900 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-sm font-bold shrink-0">
+                                {{ strtoupper(substr($req->inviter->name, 0, 1)) }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-semibold text-white truncate">{{ $req->inviter->name }}</div>
+                                @if ($req->inviter->level)
+                                    <span class="text-xs text-gray-500 capitalize">{{ $req->inviter->level }}</span>
+                                @endif
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <form method="POST" action="{{ route('friends.toggle', $req->inviter) }}">
+                                    @csrf
+                                    <button type="submit" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Accept</button>
+                                </form>
+                                <form method="POST" action="{{ route('friends.destroy', $req->inviter) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-800 text-gray-400 ring-1 ring-white/10 hover:text-red-400 hover:border-red-400/30 transition-colors cursor-pointer">Decline</button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
             {{-- Friends --}}
             <h2 class="text-lg font-semibold mt-8 mb-4">
                 Friends
@@ -146,10 +180,36 @@ $levelColors = [
                                     <span class="text-xs text-gray-500 capitalize">{{ $friend->level }}</span>
                                 @endif
                             </div>
-                            <form method="POST" action="{{ route('friends.destroy', $friend) }}">
+                            <form method="POST" action="{{ route('friends.destroy', $friend) }}" class="shrink-0">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Remove</button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            {{-- Sent requests --}}
+            @if ($sentRequests->isNotEmpty())
+                <h2 class="text-lg font-semibold mt-8 mb-4">
+                    Sent Requests
+                    <span class="ml-2 text-sm font-normal text-gray-500">{{ $sentRequests->count() }}</span>
+                </h2>
+                <div class="flex flex-col gap-2">
+                    @foreach ($sentRequests as $req)
+                        <div class="bg-gray-900 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-sm font-bold shrink-0">
+                                {{ strtoupper(substr($req->invitee->name, 0, 1)) }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-semibold text-white truncate">{{ $req->invitee->name }}</div>
+                                <span class="text-xs text-gray-600">Pending</span>
+                            </div>
+                            <form method="POST" action="{{ route('friends.destroy', $req->invitee) }}" class="shrink-0">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Cancel</button>
                             </form>
                         </div>
                     @endforeach
