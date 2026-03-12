@@ -16,6 +16,7 @@ class Game extends Model
 
     protected $fillable = [
         'court_id',
+        'creator_id',
         'scheduled_at',
         'description',
         'level',
@@ -31,6 +32,11 @@ class Game extends Model
     public function court(): BelongsTo
     {
         return $this->belongsTo(Court::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     public function attendees(): HasMany

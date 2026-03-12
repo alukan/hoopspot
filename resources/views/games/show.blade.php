@@ -77,7 +77,12 @@ $levelColors = [
                                 {{ strtoupper(substr($attendee->user->name, 0, 1)) }}
                             </div>
                             <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold text-white truncate">{{ $attendee->user->name }}</div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-semibold text-white truncate">{{ $attendee->user->name }}</span>
+                                    @if ($attendee->user_id === $game->creator_id)
+                                        <span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">Host</span>
+                                    @endif
+                                </div>
                                 @if ($attendee->user->level)
                                     <span class="inline-block mt-0.5 text-xs font-medium px-2 py-0.5 rounded-full capitalize {{ $levelColors[$attendee->user->level] }}">
                                         {{ $attendee->user->level }}

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendee;
 use App\Models\City;
 use App\Models\Court;
 use App\Models\Game;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
@@ -51,5 +53,41 @@ class GameController extends Controller
         $game->load(['court.city', 'attendees.user']);
 
         return view('games.show', compact('game'));
+    }
+
+    public function create(Request $request)
+    {
+        $courts = Court::where('status', 'active')->with('city')->orderBy('name')->get();
+        $courtId = $request->query('court');
+        $levels  = Game::LEVELS;
+
+        return view('games.create', compact('courts', 'courtId', 'levels'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'court_id'     => ['required', 'exists:courts,id'],
+            'scheduled_at' => ['required', 'date', 'after:now'],
+            'description'  => ['nullable', 'string', 'max:500'],
+            'level'        => ['nullable', 'in:' . implode(',', Game::LEVELS)],
+        ]);
+
+        $court = Court::findOrFail($data['court_id']);
+        if ($court->status !== 'active') {
+            abort(422);
+        }
+
+        $game = Game::create([
+            ...$data,
+            'creator_id' => Auth::id(),
+        ]);
+
+        Attendee::create([
+            'game_id' => $game->id,
+            'user_id' => Auth::id(),
+        ]);
+
+        return redirect()->route('games.show', $game)->with('success', 'Game scheduled!');
     }
 }

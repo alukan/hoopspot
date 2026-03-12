@@ -20,7 +20,14 @@ $levelColors = [
         <a href="{{ route('home') }}" class="text-gray-500 hover:text-white transition-colors text-sm">← Cities</a>
         <span class="text-gray-700">/</span>
         <h1 class="text-2xl font-bold">Games in <span class="text-orange-500">{{ $city->name }}</span></h1>
-        <span class="ml-auto text-sm text-gray-500">{{ $games->count() }} {{ Str::plural('game', $games->count()) }}</span>
+        <div class="ml-auto flex items-center gap-3">
+            <span class="text-sm text-gray-500">{{ $games->count() }} {{ Str::plural('game', $games->count()) }}</span>
+            @auth
+                <a href="{{ route('games.create') }}" class="bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                    + Schedule a game
+                </a>
+            @endauth
+        </div>
     </div>
 
     {{-- Filters --}}

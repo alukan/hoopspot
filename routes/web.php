@@ -13,6 +13,8 @@ Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.c
 Route::post('/courts', [CourtController::class, 'store'])->name('courts.store')->middleware('auth');
 Route::get('/courts/{court}', [CourtController::class, 'show'])->name('courts.show');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
+Route::get('/games/create', [GameController::class, 'create'])->name('games.create')->middleware('auth');
+Route::post('/games', [GameController::class, 'store'])->name('games.store')->middleware('auth');
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
 
 // Auth

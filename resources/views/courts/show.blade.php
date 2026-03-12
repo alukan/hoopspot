@@ -98,12 +98,19 @@
 
             {{-- Upcoming games --}}
             <div>
-                <h2 class="text-lg font-semibold mb-4">
-                    Upcoming Games
-                    @if ($upcomingGames->isNotEmpty())
-                        <span class="ml-2 text-sm font-normal text-orange-500">{{ $upcomingGames->count() }} scheduled</span>
-                    @endif
-                </h2>
+                <div class="flex items-center gap-3 mb-4">
+                    <h2 class="text-lg font-semibold">
+                        Upcoming Games
+                        @if ($upcomingGames->isNotEmpty())
+                            <span class="ml-2 text-sm font-normal text-orange-500">{{ $upcomingGames->count() }} scheduled</span>
+                        @endif
+                    </h2>
+                    @auth
+                        <a href="{{ route('games.create', ['court' => $court->id]) }}" class="ml-auto bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                            + Schedule a game
+                        </a>
+                    @endauth
+                </div>
 
                 @if ($upcomingGames->isEmpty())
                     <p class="text-sm text-gray-500">No upcoming games scheduled at this court.</p>
