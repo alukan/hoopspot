@@ -18,6 +18,18 @@ class GameFactory extends Factory
             'court_id'     => Court::factory(),
             'creator_id'   => User::factory(),
             'scheduled_at' => fake()->dateTimeBetween('now', '+60 days'),
+            'title'        => fake()->optional(0.5)->randomElement([
+                'Friday evening run',
+                '3v3 tourney',
+                'Morning shootaround',
+                'Sunday open run',
+                'Lunch break hoops',
+                'Winners stay on',
+                'Half-court 2v2',
+                'Pick-up game',
+                'Weekend warriors',
+                'Late night run',
+            ]),
             'description'  => fake()->optional(0.6)->sentence(),
             'level'        => fake()->optional(0.8)->randomElement(Game::LEVELS),
         ];
