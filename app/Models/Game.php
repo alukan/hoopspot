@@ -52,6 +52,6 @@ class Game extends Model
 
     public function messages(): HasMany
     {
-        return $this->hasMany(GameMessage::class)->with('user')->oldest();
+        return $this->hasMany(Message::class)->with('user')->oldest();
     }
 }

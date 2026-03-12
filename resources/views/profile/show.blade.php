@@ -151,16 +151,17 @@
             {{-- Friends --}}
             <h2 class="text-lg font-semibold mt-8 mb-4">
                 Friends
-                @if ($friends->isNotEmpty())
-                    <span class="ml-2 text-sm font-normal text-gray-500">{{ $friends->count() }}</span>
+                @if ($friendRequests->isNotEmpty())
+                    <span class="ml-2 text-sm font-normal text-gray-500">{{ $friendRequests->count() }}</span>
                 @endif
             </h2>
 
-            @if ($friends->isEmpty())
+            @if ($friendRequests->isEmpty())
                 <p class="text-sm text-gray-500">No friends yet. Join a game to meet players!</p>
             @else
                 <div class="flex flex-col gap-2">
-                    @foreach ($friends as $friend)
+                    @foreach ($friendRequests as $fr)
+                        @php $friend = $fr->inviter_id === Auth::id() ? $fr->invitee : $fr->inviter; @endphp
                         <div class="bg-gray-900 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-sm font-bold shrink-0">
                                 {{ strtoupper(substr($friend->name, 0, 1)) }}
@@ -171,11 +172,14 @@
                                     <span class="text-xs text-gray-500 capitalize">{{ $friend->level }}</span>
                                 @endif
                             </div>
-                            <form method="POST" action="{{ route('friends.destroy', $friend) }}" class="shrink-0">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Remove</button>
-                            </form>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <a href="{{ route('messages.show', $fr) }}" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/20 hover:bg-orange-500/20 transition-colors">Message</a>
+                                <form method="POST" action="{{ route('friends.destroy', $friend) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Remove</button>
+                                </form>
+                            </div>
                         </div>
                     @endforeach
                 </div>

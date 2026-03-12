@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use App\Models\GameMessage;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +27,7 @@ class GameMessageController extends Controller
         return back();
     }
 
-    public function destroy(GameMessage $message)
+    public function destroy(Message $message)
     {
         if ($message->user_id !== Auth::id()) {
             abort(403);

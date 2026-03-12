@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourtCommentController;
 use App\Http\Controllers\CourtController;
+use App\Http\Controllers\DirectMessageController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameMessageController;
@@ -45,4 +46,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/games/{game}/messages', [GameMessageController::class, 'store'])->name('game-messages.store');
     Route::delete('/game-messages/{message}', [GameMessageController::class, 'destroy'])->name('game-messages.destroy');
+
+    Route::get('/messages/{friendRequest}', [DirectMessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{friendRequest}', [DirectMessageController::class, 'store'])->name('messages.store');
 });

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FriendRequest extends Model
 {
@@ -24,5 +25,10 @@ class FriendRequest extends Model
     public function invitee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'invitee_id');
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class)->with('user')->oldest();
     }
 }

@@ -23,6 +23,10 @@ class ProfileController extends Controller
         $receivedIds = FriendRequest::where('invitee_id', $user->id)->where('status', 'accepted')->pluck('inviter_id');
         $friends     = User::whereIn('id', $sentIds->merge($receivedIds))->orderBy('name')->get();
 
+        $friendRequests = FriendRequest::where(function ($q) use ($user) {
+            $q->where('inviter_id', $user->id)->orWhere('invitee_id', $user->id);
+        })->where('status', 'accepted')->with('inviter', 'invitee')->get();
+
         $sentRequests = FriendRequest::where('inviter_id', $user->id)
             ->where('status', 'pending')
             ->with('invitee')
@@ -35,7 +39,7 @@ class ProfileController extends Controller
             ->latest()
             ->get();
 
-        return view('profile.show', compact('user', 'friends', 'sentRequests', 'incomingRequests'));
+        return view('profile.show', compact('user', 'friends', 'friendRequests', 'sentRequests', 'incomingRequests'));
     }
 
     public function edit()
