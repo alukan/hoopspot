@@ -165,9 +165,9 @@ $levelColors = [
                 </h2>
 
                 @if ($court->comments->isEmpty())
-                    <p class="text-sm text-gray-500">No comments yet. Be the first to leave a review.</p>
+                    <p class="text-sm text-gray-500 mb-6">No comments yet. Be the first to leave a review.</p>
                 @else
-                    <div class="flex flex-col gap-6">
+                    <div class="flex flex-col gap-6 mb-6">
                         @foreach ($court->comments as $comment)
                             <div>
                                 {{-- Top-level comment --}}
@@ -179,6 +179,15 @@ $levelColors = [
                                         <div class="flex items-baseline gap-2 mb-1">
                                             <span class="text-sm font-semibold text-white">{{ $comment->user->name }}</span>
                                             <span class="text-xs text-gray-600">{{ $comment->created_at->diffForHumans() }}</span>
+                                            @auth
+                                                @if ($comment->user_id === Auth::id())
+                                                    <form method="POST" action="{{ route('court-comments.destroy', $comment) }}" class="ml-auto">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Delete</button>
+                                                    </form>
+                                                @endif
+                                            @endauth
                                         </div>
                                         <p class="text-sm text-gray-300 leading-relaxed">{{ $comment->body }}</p>
                                     </div>
@@ -196,6 +205,15 @@ $levelColors = [
                                                     <div class="flex items-baseline gap-2 mb-1">
                                                         <span class="text-sm font-semibold text-white">{{ $reply->user->name }}</span>
                                                         <span class="text-xs text-gray-600">{{ $reply->created_at->diffForHumans() }}</span>
+                                                        @auth
+                                                            @if ($reply->user_id === Auth::id())
+                                                                <form method="POST" action="{{ route('court-comments.destroy', $reply) }}" class="ml-auto">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Delete</button>
+                                                                </form>
+                                                            @endif
+                                                        @endauth
                                                     </div>
                                                     <p class="text-sm text-gray-400 leading-relaxed">{{ $reply->body }}</p>
                                                 </div>
@@ -203,10 +221,53 @@ $levelColors = [
                                         @endforeach
                                     </div>
                                 @endif
+
+                                {{-- Reply form --}}
+                                @auth
+                                    <details class="ml-11 mt-3">
+                                        <summary class="text-xs text-gray-500 hover:text-white transition-colors cursor-pointer w-fit">Reply</summary>
+                                        <form method="POST" action="{{ route('court-comments.store', $court) }}" class="mt-2 flex gap-2">
+                                            @csrf
+                                            <input type="hidden" name="replies_to" value="{{ $comment->id }}">
+                                            <input
+                                                type="text"
+                                                name="body"
+                                                placeholder="Write a reply…"
+                                                required
+                                                maxlength="1000"
+                                                class="flex-1 bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50"
+                                            >
+                                            <button type="submit" class="shrink-0 bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors cursor-pointer">Post</button>
+                                        </form>
+                                    </details>
+                                @endauth
                             </div>
                         @endforeach
                     </div>
                 @endif
+
+                {{-- New comment form --}}
+                @auth
+                    <form method="POST" action="{{ route('court-comments.store', $court) }}" class="flex flex-col gap-2">
+                        @csrf
+                        <textarea
+                            name="body"
+                            placeholder="Leave a comment…"
+                            required
+                            maxlength="1000"
+                            rows="3"
+                            class="w-full bg-gray-900 border border-white/10 text-white text-sm rounded-xl px-4 py-3 placeholder-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50"
+                        ></textarea>
+                        @error('body')
+                            <p class="text-red-400 text-xs">{{ $message }}</p>
+                        @enderror
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer">Post comment</button>
+                        </div>
+                    </form>
+                @else
+                    <p class="text-sm text-gray-600"><a href="{{ route('auth.login') }}" class="text-orange-500 hover:text-orange-400 transition-colors">Log in</a> to leave a comment.</p>
+                @endauth
             </div>
 
         </div>

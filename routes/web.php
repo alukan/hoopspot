@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CourtCommentController;
 use App\Http\Controllers\CourtController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GameController;
@@ -37,4 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/users/{user}/friend', [FriendController::class, 'toggle'])->name('friends.toggle');
     Route::delete('/users/{user}/friend', [FriendController::class, 'destroy'])->name('friends.destroy');
+
+    Route::post('/courts/{court}/comments', [CourtCommentController::class, 'store'])->name('court-comments.store');
+    Route::delete('/comments/{comment}', [CourtCommentController::class, 'destroy'])->name('court-comments.destroy');
 });
