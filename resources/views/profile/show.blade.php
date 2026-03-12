@@ -38,12 +38,6 @@ $levelColors = [
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-xl px-4 py-3 mb-8">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="grid lg:grid-cols-3 gap-8">
 
         {{-- Upcoming games --}}
