@@ -14,9 +14,10 @@ class GameFactory extends Factory
     public function definition(): array
     {
         return [
-            'court_id'    => Court::factory(),
+            'court_id'     => Court::factory(),
             'scheduled_at' => fake()->dateTimeBetween('now', '+60 days'),
-            'description' => fake()->optional(0.6)->sentence(),
+            'description'  => fake()->optional(0.6)->sentence(),
+            'level'        => fake()->optional(0.8)->randomElement(Game::LEVELS),
         ];
     }
 

@@ -12,10 +12,13 @@ class Game extends Model
 {
     use HasFactory;
 
+    const LEVELS = ['beginner', 'intermediate', 'advanced', 'pro'];
+
     protected $fillable = [
         'court_id',
         'scheduled_at',
         'description',
+        'level',
     ];
 
     protected function casts(): array
