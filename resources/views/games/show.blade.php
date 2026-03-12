@@ -21,7 +21,9 @@ $levelColors = [
         <span>/</span>
         <a href="{{ route('games.index', ['city' => $game->court->city->id]) }}" class="hover:text-white transition-colors">{{ $game->court->city->name }}</a>
         <span>/</span>
-        <span class="text-gray-300">{{ \Carbon\Carbon::parse($game->scheduled_at)->format('D, M j · g:i A') }}</span>
+        <a href="{{ route('courts.show', $game->court) }}" class="hover:text-white transition-colors">{{ $game->court->name }}</a>
+        <span>/</span>
+        <span class="text-gray-300">{{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j') }}</span>
     </div>
 
     {{-- Header --}}
@@ -45,7 +47,11 @@ $levelColors = [
             <h1 class="text-3xl font-bold text-white mb-1">
                 {{ \Carbon\Carbon::parse($game->scheduled_at)->format('l, F j') }}
             </h1>
-            <p class="text-gray-400">{{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}</p>
+            <p class="text-gray-400 text-sm">
+                {{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}
+                &nbsp;·&nbsp;
+                <a href="{{ route('courts.show', $game->court) }}" class="hover:text-white transition-colors">{{ $game->court->name }}</a>
+            </p>
             @if ($game->description)
                 <p class="text-gray-400 mt-3 leading-relaxed">{{ $game->description }}</p>
             @endif
@@ -156,29 +162,14 @@ $levelColors = [
             <div class="bg-gray-900 border border-white/10 rounded-xl p-5">
                 <h3 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-4">Court</h3>
 
-                <div class="mb-4">
-                    <a href="{{ route('courts.show', $game->court) }}" class="font-semibold text-white hover:text-orange-400 transition-colors leading-snug">
-                        {{ $game->court->name }}
-                    </a>
-                    @if ($game->court->address)
-                        <p class="text-sm text-gray-500 mt-0.5">{{ $game->court->address }}</p>
-                    @endif
-                </div>
-
-                <div class="flex flex-col gap-2 text-sm mb-5">
-                    <div class="flex justify-between gap-2">
-                        <span class="text-gray-500">City</span>
-                        <span class="text-white font-medium">{{ $game->court->city->name }}</span>
-                    </div>
-                    <div class="flex justify-between gap-2">
-                        <span class="text-gray-500">Coverage</span>
-                        <span class="text-white font-medium capitalize">{{ $game->court->coverage }}</span>
-                    </div>
-                    <div class="flex justify-between gap-2">
-                        <span class="text-gray-500">Rim type</span>
-                        <span class="text-white font-medium capitalize">{{ str_replace('_', ' ', $game->court->rim_type) }}</span>
-                    </div>
-                </div>
+                <a href="{{ route('courts.show', $game->court) }}" class="block font-semibold text-white hover:text-orange-400 transition-colors leading-snug mb-1">
+                    {{ $game->court->name }}
+                </a>
+                @if ($game->court->address)
+                    <p class="text-sm text-gray-500 mb-4">{{ $game->court->address }}, {{ $game->court->city->name }}</p>
+                @else
+                    <p class="text-sm text-gray-500 mb-4">{{ $game->court->city->name }}</p>
+                @endif
 
                 <a
                     href="{{ route('courts.show', $game->court) }}"
