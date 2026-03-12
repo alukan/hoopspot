@@ -6,6 +6,7 @@ use App\Models\Court;
 use App\Models\CourtComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CourtCommentController extends Controller
 {
@@ -13,7 +14,7 @@ class CourtCommentController extends Controller
     {
         $data = $request->validate([
             'body'       => ['required', 'string', 'max:1000'],
-            'replies_to' => ['nullable', 'exists:court_comments,id'],
+            'replies_to' => ['nullable', Rule::exists('court_comments', 'id')->where('court_id', $court->id)],
         ]);
 
         $court->comments()->create([

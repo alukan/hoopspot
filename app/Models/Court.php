@@ -24,7 +24,6 @@ class Court extends Model
         'coverage',
         'rim_type',
         'images',
-        'status',
     ];
 
     protected $casts = [

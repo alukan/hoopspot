@@ -11,6 +11,10 @@ class GameMessageController extends Controller
 {
     public function store(Request $request, Game $game)
     {
+        if (! $game->attendees()->where('user_id', Auth::id())->exists()) {
+            abort(403);
+        }
+
         $data = $request->validate([
             'body' => ['required', 'string', 'max:1000'],
         ]);

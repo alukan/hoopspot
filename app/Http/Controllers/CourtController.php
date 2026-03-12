@@ -48,11 +48,12 @@ class CourtController extends Controller
             'rim_type'    => ['required', 'in:' . implode(',', Court::RIM_TYPES)],
         ]);
 
-        Court::create([
+        $court = Court::create([
             ...$data,
             'creator_id' => auth()->id(),
-            'status'     => 'pending',
         ]);
+        $court->status = 'pending';
+        $court->save();
 
         return redirect()->route('home')
             ->with('success', 'Court submitted! It will appear once approved by an admin.');
