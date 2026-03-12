@@ -15,7 +15,18 @@
             <a href="{{ route('home') }}" class="text-orange-500 font-bold text-xl tracking-tight hover:text-orange-400 transition-colors">HoopSpot</a>
             <div class="flex items-center gap-4 text-sm text-gray-400">
                 <a href="{{ route('home') }}" class="hover:text-white transition-colors">Games</a>
-                <a href="#" class="hover:text-white transition-colors">Sign in</a>
+                @auth
+                    <a href="{{ route('profile.show') }}" class="hover:text-white transition-colors">
+                        {{ Auth::user()->name }}
+                    </a>
+                    <form method="POST" action="{{ route('auth.logout') }}">
+                        @csrf
+                        <button type="submit" class="hover:text-white transition-colors cursor-pointer">Sign out</button>
+                    </form>
+                @else
+                    <a href="{{ route('auth.login') }}" class="hover:text-white transition-colors">Sign in</a>
+                    <a href="{{ route('auth.register') }}" class="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-4 py-1.5 rounded-lg transition-colors">Sign up</a>
+                @endauth
             </div>
         </div>
     </nav>
