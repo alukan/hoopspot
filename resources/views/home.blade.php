@@ -28,10 +28,11 @@
         </p>
 
         {{-- City picker --}}
-        <div class="bg-gray-900 border border-white/10 rounded-2xl p-6 max-w-md mx-auto shadow-xl">
+        <form method="GET" action="{{ route('courts.index') }}" class="bg-gray-900 border border-white/10 rounded-2xl p-6 max-w-md mx-auto shadow-xl">
             <p class="text-sm text-gray-400 mb-3 text-left font-medium">Select your city</p>
 
             <select
+                name="city"
                 id="city-select"
                 class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 mb-4"
             >
@@ -42,12 +43,12 @@
             </select>
 
             <button
-                type="button"
+                type="submit"
                 class="w-full bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl px-6 py-3 text-sm transition-colors cursor-pointer"
             >
                 See Courts
             </button>
-        </div>
+        </form>
 
     </div>
 </section>
