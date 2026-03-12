@@ -91,10 +91,10 @@ $levelColors = [
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-8">
+    <div class="grid md:grid-cols-3 gap-8">
 
         {{-- Main column: attendees --}}
-        <div class="lg:col-span-2">
+        <div class="md:col-span-2">
             <h2 class="text-lg font-semibold mb-4">
                 Players
                 @if ($game->attendees->isNotEmpty())
@@ -139,14 +139,14 @@ $levelColors = [
                                     @if ($fs === 'sent')
                                         <span class="shrink-0 text-xs text-gray-500">Requested</span>
                                     @elseif ($fs === 'incoming')
-                                        <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}">
+                                        <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}" class="shrink-0">
                                             @csrf
-                                            <button type="submit" class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Accept</button>
+                                            <button type="submit" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-500/10 text-green-400 ring-1 ring-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer">Accept</button>
                                         </form>
                                     @elseif ($fs === 'none')
-                                        <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}">
+                                        <form method="POST" action="{{ route('friends.toggle', $attendee->user) }}" class="shrink-0">
                                             @csrf
-                                            <button type="submit" class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-800 text-gray-400 ring-1 ring-white/10 hover:text-white transition-colors cursor-pointer">+ Add</button>
+                                            <button type="submit" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-800 text-gray-400 ring-1 ring-white/10 hover:text-white transition-colors cursor-pointer">+ Add</button>
                                         </form>
                                     @endif
                                 @endif
