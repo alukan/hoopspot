@@ -64,7 +64,7 @@
     @endif
 
     {{-- Photo gallery --}}
-    @if (count($court->images) === 0)
+    @if (count($court->images ?? []) === 0)
         <div class="rounded-xl overflow-hidden mb-10 h-56 bg-gray-900 border border-white/10 flex flex-col items-center justify-center gap-2 text-gray-600">
             <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 21h18M3 3h18M3 9h18M3 15h18" />
@@ -73,12 +73,12 @@
             <span class="text-sm">No photos yet</span>
         </div>
 
-    @elseif (count($court->images) === 1)
+    @elseif (count($court->images ?? []) === 1)
         <div class="rounded-xl overflow-hidden mb-10 h-64">
             <img src="{{ $court->images[0] }}" alt="{{ $court->name }}" class="w-full h-full object-cover">
         </div>
 
-    @elseif (count($court->images) === 2)
+    @elseif (count($court->images ?? []) === 2)
         <div class="grid grid-cols-2 gap-2 rounded-xl overflow-hidden mb-10 h-64">
             @foreach ($court->images as $img)
                 <div class="overflow-hidden">
@@ -98,9 +98,9 @@
                 </div>
                 <div class="flex-1 overflow-hidden relative">
                     <img src="{{ $court->images[2] }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
-                    @if (count($court->images) > 3)
+                    @if (count($court->images ?? []) > 3)
                         <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold text-sm">
-                            +{{ count($court->images) - 3 }} more
+                            +{{ count($court->images ?? []) - 3 }} more
                         </div>
                     @endif
                 </div>
