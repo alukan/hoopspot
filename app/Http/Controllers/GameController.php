@@ -66,7 +66,11 @@ class GameController extends Controller
 
     public function show(Game $game)
     {
-        $game->load(['court.city', 'attendees.user', 'messages.user']);
+        $game->load([
+            'court.city',
+            'attendees.user',
+            'messages' => fn ($q) => $q->with('user')->oldest(),
+        ]);
 
         $isAttendee = Auth::check() && $game->attendees->contains('user_id', Auth::id());
         $isCreator  = Auth::check() && $game->creator_id === Auth::id();
@@ -95,7 +99,9 @@ class GameController extends Controller
             }
         }
 
-        return view('games.show', compact('game', 'isAttendee', 'isCreator', 'friendStatuses'));
+        $goingFriends = $game->attendees->filter(fn ($a) => ($friendStatuses[$a->user_id] ?? '') === 'friends');
+
+        return view('games.show', compact('game', 'isAttendee', 'isCreator', 'friendStatuses', 'goingFriends'));
     }
 
     public function join(Game $game)

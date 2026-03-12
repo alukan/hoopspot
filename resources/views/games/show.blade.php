@@ -4,15 +4,6 @@
 
 @section('content')
 
-@php
-$levelColors = [
-    'beginner'     => 'bg-green-500/10 text-green-400 ring-1 ring-green-500/20',
-    'intermediate' => 'bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20',
-    'advanced'     => 'bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/20',
-    'pro'          => 'bg-purple-500/10 text-purple-400 ring-1 ring-purple-500/20',
-];
-@endphp
-
 <div class="max-w-5xl mx-auto px-6 py-10">
 
     {{-- Breadcrumb --}}
@@ -109,7 +100,6 @@ $levelColors = [
             @if ($game->attendees->isEmpty())
                 <p class="text-sm text-gray-500">No players signed up yet.</p>
             @else
-                @php $goingFriends = $game->attendees->filter(fn($a) => ($friendStatuses[$a->user_id] ?? '') === 'friends'); @endphp
                 @if ($goingFriends->isNotEmpty())
                     <div class="bg-sky-500/5 border border-sky-500/15 rounded-xl px-4 py-3 mb-4">
                         <p class="text-xs font-semibold text-sky-400 uppercase tracking-widest mb-2.5">Friends going</p>
