@@ -19,7 +19,7 @@ class CourtCommentController extends Controller
         $court->comments()->create([
             'user_id'    => Auth::id(),
             'body'       => $data['body'],
-            'replies_to' => $data['replies_to'] ?? null,
+            'replies_to' => $this->resolveParent($data['replies_to'] ?? null),
         ]);
 
         return back()->with('success', 'Comment posted.');
@@ -34,5 +34,16 @@ class CourtCommentController extends Controller
         $comment->delete();
 
         return back()->with('success', 'Comment deleted.');
+    }
+
+    private function resolveParent(?int $id): ?int
+    {
+        if (! $id) {
+            return null;
+        }
+
+        $comment = CourtComment::find($id);
+
+        return $comment?->replies_to ?? $id;
     }
 }

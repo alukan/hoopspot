@@ -225,15 +225,33 @@ $levelColors = [
                                                         <span class="text-xs text-gray-600">{{ $reply->created_at->diffForHumans() }}</span>
                                                     </div>
                                                     <p class="text-sm text-gray-400 leading-relaxed">{{ $reply->body }}</p>
+                                                    <div class="flex items-center gap-3 mt-1.5">
                                                     @auth
+                                                        <details>
+                                                            <summary class="text-xs text-gray-500 hover:text-white transition-colors cursor-pointer list-none">Reply</summary>
+                                                            <form method="POST" action="{{ route('court-comments.store', $court) }}" class="mt-2 flex gap-2">
+                                                                @csrf
+                                                                <input type="hidden" name="replies_to" value="{{ $reply->id }}">
+                                                                <input
+                                                                    type="text"
+                                                                    name="body"
+                                                                    placeholder="Write a reply…"
+                                                                    required
+                                                                    maxlength="1000"
+                                                                    class="flex-1 bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50"
+                                                                >
+                                                                <button type="submit" class="shrink-0 bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors cursor-pointer">Post</button>
+                                                            </form>
+                                                        </details>
                                                         @if ($reply->user_id === Auth::id())
-                                                            <form method="POST" action="{{ route('court-comments.destroy', $reply) }}" class="mt-1">
+                                                            <form method="POST" action="{{ route('court-comments.destroy', $reply) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Delete</button>
                                                             </form>
                                                         @endif
                                                     @endauth
+                                                    </div>
                                                 </div>
                                             </div>
                                         @endforeach
