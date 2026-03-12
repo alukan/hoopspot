@@ -18,6 +18,7 @@ class Game extends Model
         'court_id',
         'creator_id',
         'scheduled_at',
+        'title',
         'description',
         'level',
     ];
@@ -47,5 +48,10 @@ class Game extends Model
     public function players(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'attendees');
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(GameMessage::class)->with('user')->oldest();
     }
 }

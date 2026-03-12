@@ -5,6 +5,7 @@ use App\Http\Controllers\CourtCommentController;
 use App\Http\Controllers\CourtController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\GameMessageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -41,4 +42,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/courts/{court}/comments', [CourtCommentController::class, 'store'])->name('court-comments.store');
     Route::delete('/comments/{comment}', [CourtCommentController::class, 'destroy'])->name('court-comments.destroy');
+
+    Route::post('/games/{game}/messages', [GameMessageController::class, 'store'])->name('game-messages.store');
+    Route::delete('/game-messages/{message}', [GameMessageController::class, 'destroy'])->name('game-messages.destroy');
 });

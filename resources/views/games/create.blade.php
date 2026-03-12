@@ -22,6 +22,25 @@
         <form method="POST" action="{{ route('games.store') }}" class="flex flex-col gap-5">
             @csrf
 
+            {{-- Title --}}
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-300 mb-1.5">
+                    Title <span class="text-gray-600 font-normal">(optional)</span>
+                </label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="{{ old('title') }}"
+                    maxlength="100"
+                    placeholder="Friday evening run, 3v3 tourney…"
+                    class="w-full bg-gray-800 border @error('title') border-red-500/60 @else border-white/10 @enderror text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 placeholder:text-gray-600"
+                >
+                @error('title')
+                    <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
+                @enderror
+            </div>
+
             {{-- Court --}}
             <div>
                 <label for="court_id" class="block text-sm font-medium text-gray-300 mb-1.5">Court</label>

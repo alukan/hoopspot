@@ -66,7 +66,7 @@ class GameController extends Controller
 
     public function show(Game $game)
     {
-        $game->load(['court.city', 'attendees.user']);
+        $game->load(['court.city', 'attendees.user', 'messages.user']);
 
         $isAttendee = Auth::check() && $game->attendees->contains('user_id', Auth::id());
         $isCreator  = Auth::check() && $game->creator_id === Auth::id();
@@ -149,6 +149,7 @@ class GameController extends Controller
         $data = $request->validate([
             'court_id'     => ['required', 'exists:courts,id'],
             'scheduled_at' => ['required', 'date', 'after:now'],
+            'title'        => ['nullable', 'string', 'max:100'],
             'description'  => ['nullable', 'string', 'max:500'],
             'level'        => ['nullable', 'in:' . implode(',', Game::LEVELS)],
         ]);

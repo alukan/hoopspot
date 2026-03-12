@@ -45,10 +45,14 @@ $levelColors = [
                 </span>
             </div>
             <h1 class="text-3xl font-bold text-white mb-1">
-                {{ \Carbon\Carbon::parse($game->scheduled_at)->format('l, F j') }}
+                @if ($game->title)
+                    {{ $game->title }}
+                @else
+                    {{ \Carbon\Carbon::parse($game->scheduled_at)->format('l, F j') }}
+                @endif
             </h1>
             <p class="text-gray-400 text-sm">
-                {{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}
+                @if ($game->title){{ \Carbon\Carbon::parse($game->scheduled_at)->format('l, F j') }}&nbsp;·&nbsp;@endif{{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}
                 &nbsp;·&nbsp;
                 <a href="{{ route('courts.show', $game->court) }}" class="hover:text-white transition-colors">{{ $game->court->name }}</a>
             </p>
@@ -170,6 +174,66 @@ $levelColors = [
                     @endforeach
                 </div>
             @endif
+
+            {{-- Chat --}}
+            <div class="mt-8">
+            <h2 class="text-lg font-semibold mb-4">
+                Chat
+                @if ($game->messages->isNotEmpty())
+                    <span class="ml-2 text-sm font-normal text-gray-500">{{ $game->messages->count() }}</span>
+                @endif
+            </h2>
+
+            @if ($game->messages->isEmpty())
+                <p class="text-sm text-gray-500 mb-6">No messages yet.</p>
+            @else
+                <div class="flex flex-col gap-4 mb-6">
+                    @foreach ($game->messages as $message)
+                        <div class="flex gap-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-sm font-bold shrink-0">
+                                {{ strtoupper(substr($message->user->name, 0, 1)) }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-baseline gap-2 mb-1">
+                                    <span class="text-sm font-semibold text-white">{{ $message->user->name }}</span>
+                                    <span class="text-xs text-gray-600">{{ $message->created_at->diffForHumans() }}</span>
+                                </div>
+                                <p class="text-sm text-gray-300 leading-relaxed">{{ $message->body }}</p>
+                                @auth
+                                    @if ($message->user_id === Auth::id())
+                                        <form method="POST" action="{{ route('game-messages.destroy', $message) }}" class="mt-1.5">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors cursor-pointer">Delete</button>
+                                        </form>
+                                    @endif
+                                @endauth
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            @auth
+                <form method="POST" action="{{ route('game-messages.store', $game) }}" class="flex gap-2">
+                    @csrf
+                    <input
+                        type="text"
+                        name="body"
+                        placeholder="Send a message…"
+                        required
+                        maxlength="1000"
+                        class="flex-1 bg-gray-900 border border-white/10 text-white text-sm rounded-xl px-4 py-3 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50"
+                    >
+                    <button type="submit" class="shrink-0 bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-4 py-3 rounded-xl transition-colors cursor-pointer">Send</button>
+                </form>
+                @error('body')
+                    <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
+                @enderror
+            @else
+                <p class="text-sm text-gray-600"><a href="{{ route('auth.login') }}" class="text-orange-500 hover:text-orange-400 transition-colors">Log in</a> to send a message.</p>
+            @endauth
+            </div>
         </div>
 
         {{-- Sidebar: court details --}}
