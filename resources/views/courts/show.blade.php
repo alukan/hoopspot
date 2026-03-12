@@ -75,14 +75,14 @@
 
     @elseif (count($court->images ?? []) === 1)
         <div class="rounded-xl overflow-hidden mb-10 h-64">
-            <img src="{{ $court->images[0] }}" alt="{{ $court->name }}" class="w-full h-full object-cover">
+            <img src="{{ asset('storage/' . $court->images[0]) }}" alt="{{ $court->name }}" class="w-full h-full object-cover">
         </div>
 
     @elseif (count($court->images ?? []) === 2)
         <div class="grid grid-cols-2 gap-2 rounded-xl overflow-hidden mb-10 h-64">
             @foreach ($court->images as $img)
                 <div class="overflow-hidden">
-                    <img src="{{ $img }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    <img src="{{ asset('storage/' . $img) }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                 </div>
             @endforeach
         </div>
@@ -90,14 +90,14 @@
     @else
         <div class="grid grid-cols-3 gap-2 rounded-xl overflow-hidden mb-10 h-64">
             <div class="col-span-2 overflow-hidden">
-                <img src="{{ $court->images[0] }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                <img src="{{ asset('storage/' . $court->images[0]) }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
             </div>
             <div class="flex flex-col gap-2">
                 <div class="flex-1 overflow-hidden">
-                    <img src="{{ $court->images[1] }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    <img src="{{ asset('storage/' . $court->images[1]) }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                 </div>
                 <div class="flex-1 overflow-hidden relative">
-                    <img src="{{ $court->images[2] }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    <img src="{{ asset('storage/' . $court->images[2]) }}" alt="{{ $court->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                     @if (count($court->images ?? []) > 3)
                         <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold text-sm">
                             +{{ count($court->images ?? []) - 3 }} more

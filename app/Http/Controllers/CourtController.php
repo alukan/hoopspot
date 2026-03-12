@@ -55,13 +55,30 @@ class CourtController extends Controller
             'description' => ['nullable', 'string'],
             'coverage'    => ['required', 'in:' . implode(',', Court::COVERAGES)],
             'rim_type'    => ['required', 'in:' . implode(',', Court::RIM_TYPES)],
+            'images'      => ['nullable', 'array', 'max:5'],
+            'images.*'    => ['image', 'mimes:jpeg,png,webp', 'max:4096'],
         ]);
 
         $court = Court::create([
-            ...$data,
-            'creator_id' => auth()->id(),
+            'city_id'     => $data['city_id'],
+            'name'        => $data['name'],
+            'address'     => $data['address'],
+            'description' => $data['description'] ?? null,
+            'coverage'    => $data['coverage'],
+            'rim_type'    => $data['rim_type'],
+            'creator_id'  => auth()->id(),
         ]);
+
         $court->status = 'pending';
+
+        if ($request->hasFile('images')) {
+            $paths = [];
+            foreach ($request->file('images') as $file) {
+                $paths[] = $file->store("courts/{$court->id}", 'public');
+            }
+            $court->images = $paths;
+        }
+
         $court->save();
 
         return redirect()->route('home')

@@ -23,7 +23,7 @@
             Your submission will be reviewed by an admin before it appears publicly.
         </p>
 
-        <form method="POST" action="{{ route('courts.store') }}" class="flex flex-col gap-5">
+        <form method="POST" action="{{ route('courts.store') }}" enctype="multipart/form-data" class="flex flex-col gap-5">
             @csrf
 
             {{-- City --}}
@@ -143,6 +143,28 @@
                         <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
                     @enderror
                 </div>
+            </div>
+
+            {{-- Images --}}
+            <div>
+                <label for="images" class="block text-sm font-medium text-gray-300 mb-1.5">
+                    Photos <span class="text-gray-600 font-normal">(optional, up to 5)</span>
+                </label>
+                <label for="images" class="flex flex-col items-center justify-center w-full h-32 bg-gray-800 border-2 border-dashed @error('images') border-red-500/60 @else border-white/10 @enderror rounded-xl cursor-pointer hover:border-orange-500/40 transition-colors">
+                    <svg class="w-6 h-6 text-gray-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    <span class="text-sm text-gray-500" id="image-label">Click to upload images</span>
+                    <span class="text-xs text-gray-600 mt-0.5">JPEG, PNG, WebP · Max 4 MB each</span>
+                    <input id="images" type="file" name="images[]" multiple accept="image/jpeg,image/png,image/webp" class="hidden"
+                        onchange="document.getElementById('image-label').textContent = this.files.length + ' file' + (this.files.length !== 1 ? 's' : '') + ' selected'">
+                </label>
+                @error('images')
+                    <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
+                @enderror
+                @error('images.*')
+                    <p class="text-red-400 text-xs mt-1.5">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex gap-3 pt-1">
