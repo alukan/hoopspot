@@ -12,12 +12,18 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user()->load([
-            'games' => fn ($q) => $q->with('court')
-                ->withCount('attendees')
-                ->where('scheduled_at', '>=', now())
-                ->orderBy('scheduled_at'),
             'courts' => fn ($q) => $q->with('city')->withCount('games')->orderBy('name'),
         ]);
+
+        $upcomingGames = $user->games()->with('court')->withCount('attendees')
+            ->where('scheduled_at', '>=', now())
+            ->orderBy('scheduled_at')
+            ->get();
+
+        $pastGames = $user->games()->with('court')->withCount('attendees')
+            ->where('scheduled_at', '<', now())
+            ->orderByDesc('scheduled_at')
+            ->get();
 
         $sentIds     = FriendRequest::where('inviter_id', $user->id)->where('status', 'accepted')->pluck('invitee_id');
         $receivedIds = FriendRequest::where('invitee_id', $user->id)->where('status', 'accepted')->pluck('inviter_id');
@@ -39,7 +45,7 @@ class ProfileController extends Controller
             ->latest()
             ->get();
 
-        return view('profile.show', compact('user', 'friends', 'friendRequests', 'sentRequests', 'incomingRequests'));
+        return view('profile.show', compact('user', 'upcomingGames', 'pastGames', 'friends', 'friendRequests', 'sentRequests', 'incomingRequests'));
     }
 
     public function edit()

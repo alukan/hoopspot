@@ -36,16 +36,16 @@
         <div class="lg:col-span-2">
             <h2 class="text-lg font-semibold mb-4">
                 Upcoming Games
-                @if ($user->games->isNotEmpty())
-                    <span class="ml-2 text-sm font-normal text-orange-500">{{ $user->games->count() }}</span>
+                @if ($upcomingGames->isNotEmpty())
+                    <span class="ml-2 text-sm font-normal text-orange-500">{{ $upcomingGames->count() }}</span>
                 @endif
             </h2>
 
-            @if ($user->games->isEmpty())
+            @if ($upcomingGames->isEmpty())
                 <p class="text-sm text-gray-500">You haven't joined any upcoming games yet.</p>
             @else
                 <div class="flex flex-col gap-3">
-                    @foreach ($user->games as $game)
+                    @foreach ($upcomingGames as $game)
                         <a href="{{ route('games.show', $game) }}" class="bg-gray-900 border border-white/10 rounded-xl px-5 py-4 flex items-center gap-5 hover:border-orange-500/40 transition-colors">
 
                             {{-- Date block --}}
@@ -82,6 +82,57 @@
 
                             <div class="shrink-0 text-right">
                                 <div class="text-sm font-bold text-orange-500">{{ $game->attendees_count }}</div>
+                                <div class="text-xs text-gray-500">{{ Str::plural('player', $game->attendees_count) }}</div>
+                            </div>
+
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+
+            {{-- Past games --}}
+            @if ($pastGames->isNotEmpty())
+                <h2 class="text-lg font-semibold mt-8 mb-4">
+                    Past Games
+                    <span class="ml-2 text-sm font-normal text-gray-500">{{ $pastGames->count() }}</span>
+                </h2>
+                <div class="flex flex-col gap-3">
+                    @foreach ($pastGames as $game)
+                        <a href="{{ route('games.show', $game) }}" class="bg-gray-900 border border-white/10 rounded-xl px-5 py-4 flex items-center gap-5 hover:border-white/20 transition-colors opacity-60">
+
+                            <div class="shrink-0 w-12 text-center">
+                                <div class="text-xl font-bold text-white leading-none">
+                                    {{ \Carbon\Carbon::parse($game->scheduled_at)->format('j') }}
+                                </div>
+                                <div class="text-xs text-gray-500 uppercase tracking-wide mt-0.5">
+                                    {{ \Carbon\Carbon::parse($game->scheduled_at)->format('M') }}
+                                </div>
+                                <div class="text-xs text-gray-600 mt-1">
+                                    {{ \Carbon\Carbon::parse($game->scheduled_at)->format('g:i A') }}
+                                </div>
+                            </div>
+
+                            <div class="w-px self-stretch bg-white/10 shrink-0"></div>
+
+                            <div class="flex-1 min-w-0">
+                                @if ($game->level)
+                                    <span class="inline-block mb-1 text-xs font-medium px-2.5 py-0.5 rounded-full capitalize {{ $levelColors[$game->level] }}">
+                                        {{ $game->level }}
+                                    </span>
+                                @endif
+                                @if ($game->title)
+                                    <div class="font-semibold text-white text-sm leading-snug">{{ $game->title }}</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">{{ $game->court->name }}</div>
+                                @else
+                                    <div class="font-semibold text-white text-sm leading-snug">{{ $game->court->name }}</div>
+                                @endif
+                                @if ($game->court->address)
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $game->court->address }}</p>
+                                @endif
+                            </div>
+
+                            <div class="shrink-0 text-right">
+                                <div class="text-sm font-bold text-gray-400">{{ $game->attendees_count }}</div>
                                 <div class="text-xs text-gray-500">{{ Str::plural('player', $game->attendees_count) }}</div>
                             </div>
 
