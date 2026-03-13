@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\Court;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CourtController extends Controller
 {
@@ -72,11 +73,15 @@ class CourtController extends Controller
         $court->status = 'pending';
 
         if ($request->hasFile('images')) {
-            $paths = [];
+            $disk = config('filesystems.disks.s3.bucket') ? 's3' : 'public';
+            $urls = [];
             foreach ($request->file('images') as $file) {
-                $paths[] = $file->store("courts/{$court->id}", 'public');
+                $path = $file->store("courts/{$court->id}", $disk);
+                if ($path) {
+                    $urls[] = Storage::disk($disk)->url($path);
+                }
             }
-            $court->images = $paths;
+            $court->images = $urls ?: null;
         }
 
         $court->save();
