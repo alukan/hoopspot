@@ -26,10 +26,11 @@ class CourtFactory extends Factory
             'rim_type'    => fake()->randomElement(Court::RIM_TYPES),
             'status'      => 'active',
             'images'      => fake()->optional(0.6)->passthrough(
-                collect(range(1, fake()->numberBetween(1, 3)))
-                    ->map(fn ($i) => "https://picsum.photos/seed/" . fake()->unique()->word() . "/800/600")
-                    ->values()
-                    ->all()
+                fake()->randomElements([
+                    'https://random-nonrelated.s3.us-east-2.amazonaws.com/gallery-10.jpg',
+                    'https://random-nonrelated.s3.us-east-2.amazonaws.com/65f5765ea3eb64ed9bce766b_IMG_7193.webp',
+                    'https://random-nonrelated.s3.us-east-2.amazonaws.com/PatClarkePark03.webp',
+                ], fake()->numberBetween(1, 3))
             ),
         ];
     }
