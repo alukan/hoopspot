@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\VerifyEmailMail;
 use App\Models\User;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -17,10 +20,10 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
-            'name'                  => ['required', 'string', 'max:255'],
-            'email'                 => ['required', 'email', 'unique:users'],
-            'password'              => ['required', 'min:8', 'confirmed'],
-            'level'                 => ['nullable', 'in:' . implode(',', User::LEVELS)],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:8', 'confirmed'],
+            'level'    => ['nullable', 'in:' . implode(',', User::LEVELS)],
         ]);
 
         $user = User::create([
@@ -32,7 +35,15 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home');
+        $token = JWT::encode([
+            'sub'   => $user->id,
+            'email' => $user->email,
+            'exp'   => now()->addHours(24)->timestamp,
+        ], config('app.key'), 'HS256');
+
+        Mail::to($user->email)->send(new VerifyEmailMail($user, route('verification.verify', ['token' => $token])));
+
+        return redirect()->route('verification.notice');
     }
 
     public function showLogin()
@@ -49,6 +60,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
+            if (! $request->user()->email_verified_at) {
+                return redirect()->route('verification.notice');
+            }
+
             return redirect()->intended(route('home'));
         }
 
