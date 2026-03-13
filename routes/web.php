@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourtCommentController;
 use App\Http\Controllers\CourtController;
 use App\Http\Controllers\DirectMessageController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameMessageController;
@@ -12,19 +13,16 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Courts (create must be before {court} wildcard)
 Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
-Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create')->middleware('auth');
-Route::post('/courts', [CourtController::class, 'store'])->name('courts.store')->middleware('auth');
+Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create')->middleware(['auth', 'verified']);
 Route::get('/courts/{court}', [CourtController::class, 'show'])->name('courts.show');
+
+// Games (create must be before {game} wildcard)
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
-Route::get('/games/create', [GameController::class, 'create'])->name('games.create')->middleware('auth');
-Route::post('/games', [GameController::class, 'store'])->name('games.store')->middleware('auth');
+Route::get('/games/create', [GameController::class, 'create'])->name('games.create')->middleware(['auth', 'verified']);
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
-Route::post('/games/{game}/join', [GameController::class, 'join'])->name('games.join')->middleware('auth');
-Route::delete('/games/{game}/leave', [GameController::class, 'leave'])->name('games.leave')->middleware('auth');
-Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy')->middleware('auth');
-Route::delete('/courts/{court}', [CourtController::class, 'destroy'])->name('courts.destroy')->middleware('auth');
-Route::post('/courts/{court}/approve', [CourtController::class, 'approve'])->name('courts.approve')->middleware('auth');
 
 // Auth
 Route::middleware('guest')->group(function () {
@@ -35,8 +33,23 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth');
 
-// Profile
-Route::middleware('auth')->group(function () {
+// Email verification
+Route::get('/verify-email', [EmailVerificationController::class, 'notice'])->name('verification.notice')->middleware('auth');
+Route::post('/verify-email/send', [EmailVerificationController::class, 'send'])->name('verification.send')->middleware('auth');
+Route::get('/verify-email/{token}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
+
+// Authenticated + verified routes
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::post('/courts', [CourtController::class, 'store'])->name('courts.store');
+    Route::delete('/courts/{court}', [CourtController::class, 'destroy'])->name('courts.destroy');
+    Route::post('/courts/{court}/approve', [CourtController::class, 'approve'])->name('courts.approve');
+
+    Route::post('/games', [GameController::class, 'store'])->name('games.store');
+    Route::post('/games/{game}/join', [GameController::class, 'join'])->name('games.join');
+    Route::delete('/games/{game}/leave', [GameController::class, 'leave'])->name('games.leave');
+    Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
+
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
