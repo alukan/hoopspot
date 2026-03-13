@@ -30,6 +30,7 @@ class CourtFactory extends Factory
                     'https://random-nonrelated.s3.us-east-2.amazonaws.com/gallery-10.jpg',
                     'https://random-nonrelated.s3.us-east-2.amazonaws.com/65f5765ea3eb64ed9bce766b_IMG_7193.webp',
                     'https://random-nonrelated.s3.us-east-2.amazonaws.com/PatClarkePark03.webp',
+                    'https://random-nonrelated.s3.us-east-2.amazonaws.com/sinshine.jpeg'
                 ], fake()->numberBetween(1, 3))
             ),
         ];
