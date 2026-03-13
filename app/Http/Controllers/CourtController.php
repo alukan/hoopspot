@@ -86,7 +86,7 @@ class CourtController extends Controller
 
         $court->save();
 
-        return redirect()->route('home')
+        return redirect()->route('courts.show', $court)
             ->with('success', 'Court submitted! It will appear once approved by an admin.');
     }
 
