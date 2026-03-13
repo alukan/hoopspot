@@ -14,6 +14,7 @@
         <div class="max-w-5xl mx-auto flex items-center justify-between">
             <a href="{{ route('home') }}" class="text-orange-500 font-bold text-xl tracking-tight hover:text-orange-400 transition-colors">HoopSpot</a>
             <div class="flex items-center gap-4 text-sm text-gray-400">
+                <a href="{{ route('home') }}" class="hover:text-white transition-colors">Courts</a>
                 <a href="{{ route('home') }}" class="hover:text-white transition-colors">Games</a>
                 @auth
                     <a href="{{ route('profile.show') }}" class="hover:text-white transition-colors">
