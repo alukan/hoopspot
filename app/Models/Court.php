@@ -27,9 +27,23 @@ class Court extends Model
         'images',
     ];
 
-     protected $casts = [
-        'images' => 'array',
-    ];
+     protected $casts = [];
+
+    protected function images(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value): array {
+                $items = $value ? json_decode($value, true) : [];
+                return array_map(function (string $img) {
+                    if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://')) {
+                        return $img;
+                    }
+                    return asset('storage/' . $img);
+                }, $items ?? []);
+            },
+            set: fn ($value) => $value !== null ? json_encode($value) : null,
+        );
+    }
 
     public function city(): BelongsTo
     {
